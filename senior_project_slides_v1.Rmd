@@ -254,16 +254,6 @@ ggplot(crash, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
 
 ```
 
-## Does Harris Have the Worst Drivers?
-
-- Harris County has the highest crash rate
-- However:
-  - difference from Bexar is small
-  - not dramatically worse than other large counties
-
-### Conclusion
-
-Houston is not overwhelmingly worse, just slightly higher.
 
 ## Ranking Counties by Fatal Crash Rate
 
@@ -481,11 +471,11 @@ The results suggest trends, but not definitive causation.
 - Harris County has the highest crash rate
 - But:
   - only slightly higher than Bexar
-  - not strongly explained by driver behavior
+  - It is not strongly explained by driver behavior
 
 ### Final Answer
 
-Harris does not clearly have the “worst drivers.”
+Harris does not clearly have the “worst drivers.” 
 
 
 
