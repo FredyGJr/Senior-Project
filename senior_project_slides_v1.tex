@@ -1,0 +1,666 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+  ignorenonframetext,
+]{beamer}
+\newif\ifbibliography
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% remove section numbering
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{section title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{subsection title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\usetheme[]{Madrid}
+\usecolortheme[]{dolphin}
+\usefonttheme[]{structurebold}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{array}
+\setbeamertemplate{navigation symbols}{}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Are Harris County Drivers the Worst in Texas?},
+  pdfauthor={Fredy Guevara},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Are Harris County Drivers the Worst in Texas?}
+\subtitle{An Editable Beamer Presentation}
+\author{Fredy Guevara}
+\date{2026-04-14}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Title Slide}
+\phantomsection\label{title-slide}
+\begin{block}{Are Harris County Drivers the Worst in Texas?}
+\phantomsection\label{are-harris-county-drivers-the-worst-in-texas}
+Senior project comparing selected Texas counties using crash rates,
+confidence intervals, and regression.
+
+\vspace{0.5cm}
+
+Selected counties: Harris, Travis, Bexar, Montgomery, Hays, Medina,
+Hidalgo, Hale, and Lipscomb.
+\end{block}
+\end{frame}
+
+\begin{frame}{Research Question}
+\phantomsection\label{research-question}
+\begin{block}{Main Question}
+\phantomsection\label{main-question}
+Is Harris County the county with the worst drivers among the counties in
+this sample?
+\end{block}
+
+\begin{block}{Working Idea}
+\phantomsection\label{working-idea}
+This project treats ``worst drivers'' as a question of:
+
+\begin{itemize}
+\tightlist
+\item
+  crash frequency relative to population
+\item
+  fatal crash risk
+\item
+  risky driving patterns such as speeding, DUI, and distraction
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Why Total Crashes Are Not Enough}
+\phantomsection\label{why-total-crashes-are-not-enough}
+A large county will usually have more crashes simply because it has more
+people and more traffic.
+
+That means total crashes alone can be misleading.
+
+\begin{block}{Better comparison measures}
+\phantomsection\label{better-comparison-measures}
+\begin{itemize}
+\tightlist
+\item
+  crash rate per 100,000 people
+\item
+  fatal crash rate per 100,000 people
+\item
+  proportions involving speeding, DUI, and distracted driving
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Data Source}
+\phantomsection\label{data-source}
+The data were gathered from the Texas Department of Transportation Motor
+Vehicle Crash Statistics site:
+
+\small
+
+\url{https://www.txdot.gov/data-maps/crash-reports-records/motor-vehicle-crash-statistics.html}
+\normalsize
+
+The county-level values were compiled from the 2024 PDF reports for
+total crashes, DUI crashes, distracted-driving crashes, speed-related
+crashes, and fatal crashes.
+\end{frame}
+
+\begin{frame}{Counties in the Study}
+\phantomsection\label{counties-in-the-study}
+\begin{longtable}[]{@{}l@{}}
+\caption{Counties included in the analysis}\tabularnewline
+\toprule\noalign{}
+County \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+County \\
+\midrule\noalign{}
+\endhead
+Harris \\
+Travis \\
+Bexar \\
+Montgomery \\
+Hays \\
+Medina \\
+Hidalgo \\
+Hale \\
+Lipscomb \\
+\bottomrule\noalign{}
+\end{longtable}
+\end{frame}
+
+\begin{frame}{Dataset Structure}
+\phantomsection\label{dataset-structure}
+The dataset contains raw county-level values and derived variables.
+
+\begin{block}{Raw variables}
+\phantomsection\label{raw-variables}
+\begin{itemize}
+\tightlist
+\item
+  Population
+\item
+  Total\_Crashes
+\item
+  Fatal\_Crashes
+\item
+  Serious\_Crashes
+\item
+  Minor\_Crashes
+\item
+  Speed\_Crashes
+\item
+  DUI\_Crashes
+\item
+  Distracted\_Crashes
+\end{itemize}
+\end{block}
+
+\begin{block}{Derived variables}
+\phantomsection\label{derived-variables}
+\begin{itemize}
+\tightlist
+\item
+  Crash\_Rate
+\item
+  Fatal\_Rate
+\item
+  SpeedPercent
+\item
+  DUIPercent
+\item
+  DistractedPercent
+\item
+  SeverityPercent
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Creating New Variables}
+\phantomsection\label{creating-new-variables}
+To compare counties fairly, several derived variables were created.
+
+\[
+\text{Crash Rate} = \frac{\text{Total Crashes}}{\text{Population}} \times 100{,}000
+\]
+
+\[
+\text{Fatal Crash Rate} = \frac{\text{Fatal Crashes}}{\text{Population}} \times 100{,}000
+\]
+
+\[
+\text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
+\]
+
+\[
+\text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
+\]
+
+\[
+\text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
+\]
+\end{frame}
+
+\begin{frame}{Severity Measure}
+\phantomsection\label{severity-measure}
+To capture how dangerous crashes are, I also used:
+
+\[
+\text{Severity Percent} = \frac{\text{Fatal Crashes} + \text{Serious Crashes}}{\text{Total Crashes}}
+\]
+
+This measure helps distinguish between counties that have many crashes
+and counties that have more severe crashes.
+\end{frame}
+
+\begin{frame}{Summary of Derived Variables}
+\phantomsection\label{summary-of-derived-variables}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1209}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1209}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1209}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1209}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1978}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1758}}@{}}
+\caption{Derived variables used in the analysis}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+County
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Crash\_Rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Fatal\_Rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SpeedPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+DUIPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+DistractedPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SeverityPercent
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+County
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Crash\_Rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Fatal\_Rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SpeedPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+DUIPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+DistractedPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SeverityPercent
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+Harris & 2301.6684 & 10.9115 & 0.3240 & 0.0291 & 0.0855 & 0.2503 \\
+Bexar & 2238.5467 & 9.4576 & 0.1549 & 0.0341 & 0.3660 & 0.0202 \\
+Hidalgo & 1788.1609 & 6.1397 & 0.3359 & 0.0453 & 0.0947 & 0.0211 \\
+Montgomery & 1592.3210 & 7.6058 & 0.3705 & 0.0393 & 0.1459 & 0.0291 \\
+Medina & 1475.8063 & 19.4185 & 0.2344 & 0.0550 & 0.2285 & 0.0514 \\
+Hale & 1437.0165 & 12.5778 & 0.2735 & 0.0547 & 0.2363 & 0.0416 \\
+Hays & 1221.6796 & 8.8183 & 0.3115 & 0.0666 & 0.2526 & 0.0455 \\
+Travis & 1137.0393 & 9.9577 & 0.1920 & 0.0745 & 0.3235 & 0.0410 \\
+Lipscomb & 910.7468 & 36.4299 & 0.2000 & 0.0000 & 0.0800 & 0.0400 \\
+\bottomrule\noalign{}
+\end{longtable}
+\end{frame}
+
+\begin{frame}{Ranking Counties by Crash Rate}
+\phantomsection\label{ranking-counties-by-crash-rate}
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Counties ranked by crash rate per 100,000}\tabularnewline
+\toprule\noalign{}
+County & Crash\_Rate & Total\_Crashes & Population \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+County & Crash\_Rate & Total\_Crashes & Population \\
+\midrule\noalign{}
+\endhead
+Harris & 2301.67 & 115173 & 5003892 \\
+Bexar & 2238.55 & 48522 & 2167567 \\
+Hidalgo & 1788.16 & 16601 & 928384 \\
+Montgomery & 1592.32 & 12352 & 775723 \\
+Medina & 1475.81 & 836 & 56647 \\
+Hale & 1437.02 & 457 & 31802 \\
+Hays & 1221.68 & 3602 & 294840 \\
+Travis & 1137.04 & 15872 & 1395906 \\
+Lipscomb & 910.75 & 25 & 2745 \\
+\bottomrule\noalign{}
+\end{longtable}
+
+\begin{block}{Brief interpretation}
+\phantomsection\label{brief-interpretation}
+Ranking by crash rate is more meaningful than ranking by total crashes
+because it adjusts for county size.
+\end{block}
+\end{frame}
+
+\begin{frame}{Crash Rate by County}
+\phantomsection\label{crash-rate-by-county}
+\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/crash-rate-plot-1} \end{center}
+
+\begin{block}{Brief interpretation}
+\phantomsection\label{brief-interpretation-1}
+If Harris County is near the top of this chart, that supports the claim
+that Houston-area drivers face a higher crash risk. If several counties
+are close, then Harris may not be uniquely worst.
+\end{block}
+\end{frame}
+
+\begin{frame}{Ranking Counties by Fatal Crash Rate}
+\phantomsection\label{ranking-counties-by-fatal-crash-rate}
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Counties ranked by fatal crash rate per 100,000}\tabularnewline
+\toprule\noalign{}
+County & Fatal\_Rate & Fatal\_Crashes & Population \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+County & Fatal\_Rate & Fatal\_Crashes & Population \\
+\midrule\noalign{}
+\endhead
+Lipscomb & 36.43 & 1 & 2745 \\
+Medina & 19.42 & 11 & 56647 \\
+Hale & 12.58 & 4 & 31802 \\
+Harris & 10.91 & 546 & 5003892 \\
+Travis & 9.96 & 139 & 1395906 \\
+Bexar & 9.46 & 205 & 2167567 \\
+Hays & 8.82 & 26 & 294840 \\
+Montgomery & 7.61 & 59 & 775723 \\
+Hidalgo & 6.14 & 57 & 928384 \\
+\bottomrule\noalign{}
+\end{longtable}
+
+\begin{block}{Brief interpretation}
+\phantomsection\label{brief-interpretation-2}
+Fatal crash rate focuses on severity rather than frequency, so it can
+highlight counties where crashes are less common but more dangerous.
+\end{block}
+\end{frame}
+
+\begin{frame}{Risk Factor Table}
+\phantomsection\label{risk-factor-table}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1594}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1884}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1594}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2609}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2319}}@{}}
+\caption{Risk-factor proportions by county}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+County
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SpeedPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+DUIPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+DistractedPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SeverityPercent
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+County
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SpeedPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+DUIPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+DistractedPercent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SeverityPercent
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+Montgomery & 0.3705 & 0.0393 & 0.1459 & 0.0291 \\
+Hidalgo & 0.3359 & 0.0453 & 0.0947 & 0.0211 \\
+Harris & 0.3240 & 0.0291 & 0.0855 & 0.2503 \\
+Hays & 0.3115 & 0.0666 & 0.2526 & 0.0455 \\
+Hale & 0.2735 & 0.0547 & 0.2363 & 0.0416 \\
+Medina & 0.2344 & 0.0550 & 0.2285 & 0.0514 \\
+Lipscomb & 0.2000 & 0.0000 & 0.0800 & 0.0400 \\
+Travis & 0.1920 & 0.0745 & 0.3235 & 0.0410 \\
+Bexar & 0.1549 & 0.0341 & 0.3660 & 0.0202 \\
+\bottomrule\noalign{}
+\end{longtable}
+
+\begin{block}{Brief interpretation}
+\phantomsection\label{brief-interpretation-3}
+These percentages help explain why crash rates differ across counties.
+High values suggest that risky behavior may contribute to county-level
+differences.
+\end{block}
+\end{frame}
+
+\begin{frame}{Speeding vs Crash Rate}
+\phantomsection\label{speeding-vs-crash-rate}
+\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/speed-vs-crash-1} \end{center}
+
+\begin{block}{Brief interpretation}
+\phantomsection\label{brief-interpretation-4}
+An upward trend would suggest that counties with more speed-related
+crashes also tend to have higher crash rates.
+\end{block}
+\end{frame}
+
+\begin{frame}{Distracted Driving vs Crash Rate}
+\phantomsection\label{distracted-driving-vs-crash-rate}
+\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/distracted-vs-crash-1} \end{center}
+
+\begin{block}{Brief interpretation}
+\phantomsection\label{brief-interpretation-5}
+This plot checks whether distracted driving is associated with higher
+crash rates across the sample counties.
+\end{block}
+\end{frame}
+
+\begin{frame}{Confidence Interval Setup}
+\phantomsection\label{confidence-interval-setup}
+To estimate the true county crash proportion, I used:
+
+\[
+\hat{p} = \frac{\text{Total Crashes}}{\text{Population}}
+\]
+
+\[
+\hat{p} \pm z \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+\]
+
+where \(z = 1.96\) for a 95\% confidence level.
+\end{frame}
+
+\begin{frame}{Confidence Intervals: Harris vs Montgomery}
+\phantomsection\label{confidence-intervals-harris-vs-montgomery}
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{95\% confidence intervals for crash rate per
+100,000}\tabularnewline
+\toprule\noalign{}
+County & Lower\_CI & Upper\_CI & Crash\_Rate \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+County & Lower\_CI & Upper\_CI & Crash\_Rate \\
+\midrule\noalign{}
+\endhead
+Harris & 2288.53 & 2314.81 & 2301.67 \\
+Montgomery & 1564.46 & 1620.18 & 1592.32 \\
+\bottomrule\noalign{}
+\end{longtable}
+
+\begin{block}{Brief interpretation}
+\phantomsection\label{brief-interpretation-6}
+If the two intervals overlap a lot, then the difference between Harris
+and Montgomery may not be statistically meaningful.
+\end{block}
+\end{frame}
+
+\begin{frame}{Regression Model}
+\phantomsection\label{regression-model}
+The regression model used was:
+
+\[
+\text{Crash Rate} = \beta_0 + \beta_1(\text{SpeedPercent}) + \beta_2(\text{DUIPercent}) + \beta_3(\text{DistractedPercent}) + \varepsilon
+\]
+
+This model tests whether crash rate is associated with speeding, DUI,
+and distracted-driving shares.
+\end{frame}
+
+\begin{frame}{Regression Output}
+\phantomsection\label{regression-output}
+\begin{longtable}[]{@{}lrrrr@{}}
+\caption{Regression coefficients}\tabularnewline
+\toprule\noalign{}
+term & estimate & std.error & statistic & p.value \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+term & estimate & std.error & statistic & p.value \\
+\midrule\noalign{}
+\endhead
+(Intercept) & 84.007 & 1372.552 & 0.0612 & 0.9536 \\
+SpeedPercent & 5107.916 & 4239.003 & 1.2050 & 0.2821 \\
+DUIPercent & -16501.027 & 14148.702 & -1.1663 & 0.2961 \\
+DistractedPercent & 4237.233 & 3694.462 & 1.1469 & 0.3033 \\
+\bottomrule\noalign{}
+\end{longtable}
+\end{frame}
+
+\begin{frame}{Model Fit}
+\phantomsection\label{model-fit}
+\begin{longtable}[]{@{}rrrrr@{}}
+\caption{Regression model fit}\tabularnewline
+\toprule\noalign{}
+r.squared & adj.r.squared & sigma & statistic & p.value \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+r.squared & adj.r.squared & sigma & statistic & p.value \\
+\midrule\noalign{}
+\endhead
+0.25 & -0.2 & 519.6527 & 0.5556 & 0.6667 \\
+\bottomrule\noalign{}
+\end{longtable}
+
+\begin{block}{Brief interpretation}
+\phantomsection\label{brief-interpretation-7}
+The coefficients show the direction and size of each relationship.
+Smaller p-values suggest stronger evidence that a variable matters. The
+\(R^2\) value shows how much of the variation in crash rates is
+explained by the model.
+\end{block}
+\end{frame}
+
+\begin{frame}{Main Takeaways}
+\phantomsection\label{main-takeaways}
+\begin{itemize}
+\tightlist
+\item
+  Total crashes are not enough to identify the ``worst drivers.''
+\item
+  Crash rate and fatal crash rate provide fairer county comparisons.
+\item
+  Risk-factor percentages help explain why counties differ.
+\item
+  Harris County should be judged by rate-based measures, not just size.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Limitations}
+\phantomsection\label{limitations}
+\begin{itemize}
+\tightlist
+\item
+  The sample includes selected counties rather than all Texas counties.
+\item
+  County-level analysis cannot identify individual driver behavior.
+\item
+  Population-based crash rates are useful, but vehicle miles traveled
+  would be an even stronger exposure measure.
+\item
+  Small counties may produce unstable percentages because of low counts.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusion}
+\phantomsection\label{conclusion}
+This project uses rates, confidence intervals, and regression to study
+whether Harris County stands out as having the worst drivers among the
+selected counties.
+
+The final answer depends on whether Harris ranks highest after adjusting
+for population and whether its estimated crash rate is clearly different
+from comparable counties.
+\end{frame}
+
+\begin{frame}[fragile]{Appendix: Editable Notes}
+\phantomsection\label{appendix-editable-notes}
+\begin{block}{Future edits}
+\phantomsection\label{future-edits}
+\begin{itemize}
+\tightlist
+\item
+  Replace short interpretations with your own spoken conclusions.
+\item
+  Add or remove slides by using \texttt{\#\#} headings.
+\item
+  Change theme, colors, and font in the YAML block.
+\item
+  Swap HTML tables for smaller slide tables if needed.
+\item
+  Add one slide with your final conclusion after reviewing your outputs.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\end{document}

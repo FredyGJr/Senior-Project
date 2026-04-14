@@ -1,0 +1,302 @@
+---
+title: "Are Harris County Drivers the Worst in Texas?"
+author: "Fredy Guevara"
+date: "2026-03-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+```
+
+# Introduction
+
+This project studies whether Harris County, which includes Houston, has the worst drivers among a selected group of Texas counties. The counties included in this analysis are Harris, Travis, Bexar, Montgomery, Hays, Medina, Hidalgo, Hale, and Lipscomb.
+
+The goal is not just to compare the total number of crashes, since larger counties naturally tend to have more crashes. Instead, this project compares counties using crash rates, fatal crash rates, and the proportions of crashes involving speeding, alcohol, and distracted driving.
+
+# Research Question
+Does the data suggest that Harris County has the worst drivers among the selected Texas counties?
+
+# Data
+
+The data used in this project were obtained from the Texas Department of Transportation (TxDOT) Motor Vehicle Crash Statistics database:
+
+https://www.txdot.gov/data-maps/crash-reports-records/motor-vehicle-crash-statistics.html
+
+The dataset was constructed by extracting county-level crash statistics for the year 2024 from several PDF reports provided on the TxDOT website. These reports included:
+
+- Total crashes and injuries by county  
+- Speed-related crashes  
+- DUI (alcohol-related) crashes  
+- Distracted driving crashes  
+- Fatal crashes  
+
+The counties selected for this analysis are Harris, Travis, Bexar, Montgomery, Hays, Medina, Hidalgo, Hale, and Lipscomb.
+
+Population estimates for each county were taken for July 2024 in order to match the time frame of the crash data.
+
+The raw data were first organized in Excel and then imported into R for cleaning, transformation, and analysis.
+
+```{r}
+crash <- read.csv("Crash_Data_2024.csv")
+
+head(crash)
+str(crash)
+```
+
+# Creating New Variables 
+To compare counties fairly, several derived variables were created using the following formulas.
+\[
+\text{Crash Rate} = \frac{\text{Total Crashes}}{\text{Population}} \times 100{,}000
+\]
+
+\[
+\text{Fatal Crash Rate} = \frac{\text{Fatal Crashes}}{\text{Population}} \times 100{,}000
+\]
+
+\[
+\text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
+\]
+
+\[
+\text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
+\]
+
+\[
+\text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
+\]
+
+\[
+\text{Severity Percent} = \frac{\text{Fatal Crashes + Serious Crashes}}{\text{Total Crashes}}
+\]
+
+```{r}
+crash <- crash %>%
+  mutate(
+    Total_Crashes = as.numeric(gsub(",", "", Total_Crashes)),
+    Population = as.numeric(gsub(",", "", Population)),
+    Fatal_Crashes = as.numeric(gsub(",", "", Fatal_Crashes)),
+    Speed_Crashes = as.numeric(gsub(",", "", Speed_Crashes)),
+    DUI_Crashes = as.numeric(gsub(",", "", DUI_Crashes)),
+    Distracted_Crashes = as.numeric(gsub(",", "", Distracted_Crashes)),
+    Serious_Crashes = as.numeric(gsub(",", "", Serious_Crashes)),
+    Minor_Crashes = as.numeric(gsub(",", "", Minor_Crashes))
+  )
+
+crash <- crash %>%
+  mutate(
+    Crash_Rate = (Total_Crashes / Population) * 100000,
+    Fatal_Rate = (Fatal_Crashes / Population) * 100000,
+    SpeedPercent = Speed_Crashes / Total_Crashes,
+    DUIPercent = DUI_Crashes / Total_Crashes,
+    DistractedPercent = Distracted_Crashes / Total_Crashes,
+    SeverityPercent = (Fatal_Crashes + Serious_Crashes) / Total_Crashes
+  )
+
+summary(crash)
+```
+# Comparing Counties by Crash Rate
+
+The first comparison ranks counties by crash rate rather than by total crashes.
+
+```{r}
+crash %>%
+  arrange(desc(Crash_Rate))
+```
+## Interpretation
+
+Ranking counties by crash rate provides a more meaningful comparison than total crashes because it adjusts for population differences. Larger counties such as Harris and Bexar naturally have more crashes, but the crash rate shows how frequent crashes are relative to population size.
+
+From the table, we can see which counties truly have higher driving risk rather than just higher totals.
+# Comparing Counties by Fatal Crash Rate
+
+This comparison focuses on the more severe outcomes.
+
+```{r}
+crash %>%
+  arrange(desc(Fatal_Rate))
+```
+ 
+## Interpretation
+
+The fatal crash rate highlights how dangerous crashes are in each county, not just how often they occur. Some counties may have lower total crash rates but higher fatality rates, suggesting more severe driving conditions or higher-risk environments such as rural highways.
+
+# Crash Rate Visualization
+
+The graph below shows crash rates per 100,000 people for the selected counties.
+
+```{r}
+ggplot(crash, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Crash Rate per 100,000 by County",
+    x = "County",
+    y = "Crash Rate"
+  )
+```
+## Interpretation
+
+The bar chart clearly shows differences in crash rates across counties. If Harris County appears near the top, this supports the idea that drivers in Houston may face higher crash risk. However, if other counties have similar or higher rates, then Harris County may not be uniquely dangerous.
+# Speeding and Crash Rate
+
+This scatterplot checks whether counties with a higher share of speed-related crashes also tend to have higher crash rates.
+
+```{r}
+ggplot(crash, aes(x = SpeedPercent, y = Crash_Rate, label = County)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_text(nudge_y = 40, size = 3) +
+  labs(
+    title = "Speeding vs Crash Rate",
+    x = "Proportion of Crashes Involving Speed",
+    y = "Crash Rate per 100,000"
+  )
+```
+## Interpretation
+
+The scatterplot suggests whether there is a relationship between speeding and crash rates. The upward trend in the regression line indicates that counties with a higher proportion of speed-related crashes tend to have higher overall crash rates. This suggests that speeding may be an important contributing factor to crash frequency.
+
+# Distracted Driving vs Crash Rate
+
+
+```{r}
+ggplot(crash, aes(x = DistractedPercent, y = Crash_Rate, label = County)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_text(nudge_y = 40, size = 3) +
+  labs(
+    title = "Distracted Driving vs Crash Rate",
+    x = "Proportion of Crashes Involving Distracted Driving",
+    y = "Crash Rate per 100,000"
+  )
+```
+# Drinking and Driving
+
+```{r}
+ggplot(crash, aes(x = DUIPercent, y = Crash_Rate, label = County)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_text(nudge_y = 40, size = 3) +
+  labs(
+    title = "DUI Driving vs Crash Rate",
+    x = "Proportion of Crashes Involving a DUI",
+    y = "Crash Rate per 100,000"
+  )
+```
+# Table for the Percentages
+```{r}
+crash %>%
+  select(County, Crash_Rate, Fatal_Rate, SpeedPercent, DUIPercent, DistractedPercent, SeverityPercent) %>%
+  arrange(desc(Crash_Rate))
+```
+
+
+# Confidence Interval
+
+To estimate the crash rate, a confidence interval is calculated using:
+
+\[
+\hat{p} = \frac{\text{Total Crashes}}{\text{Population}}
+\]
+
+\[
+\hat{p} \pm z \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+\]
+
+# Confidence Interval for Harris County
+
+
+Here, \( \hat{p} \) represents the observed crash proportion and \( n \) is the population of Harris County. The value \( z = 1.96 \) corresponds to a 95% confidence level.
+
+The results below show the estimated range for the crash rate in Harris County.
+z=1.96.
+
+```{r}
+harris <- crash %>% filter(County == "Harris")
+
+p_hat_harris <- harris$Total_Crashes / harris$Population
+n_harris <- harris$Population
+z <- 1.96
+se_harris <- sqrt((p_hat_harris * (1 - p_hat_harris)) / n_harris)
+
+lower_harris <- p_hat_harris - z * se_harris
+upper_harris <- p_hat_harris + z * se_harris
+
+lower_harris * 100000
+upper_harris * 100000
+```
+
+# Confidence Interval for Montgomery County
+
+The same method was applied to Montgomery County in order to compare the estimated crash rates between counties.
+```{r}
+montgomery <- crash %>% filter(County == "Montgomery")
+
+p_hat_montgomery <- montgomery$Total_Crashes / montgomery$Population
+n_montgomery <- montgomery$Population
+se_montgomery <- sqrt((p_hat_montgomery * (1 - p_hat_montgomery)) / n_montgomery)
+
+lower_montgomery <- p_hat_montgomery - z * se_montgomery
+upper_montgomery <- p_hat_montgomery + z * se_montgomery
+
+lower_montgomery * 100000
+upper_montgomery * 100000
+```
+# Confidence Interval Comparison Table
+```{r}
+tibble(
+  County = c("Harris", "Montgomery"),
+  Lower_CI = c(lower_harris, lower_montgomery) * 100000,
+  Upper_CI = c(upper_harris, upper_montgomery) * 100000
+)
+```
+## Interpretation
+
+The confidence intervals provide a range of plausible values for the true crash rate in each county. If the intervals for Harris County and Montgomery County overlap significantly, then the difference between the two counties may not be statistically meaningful. If they do not overlap, this suggests a real difference in crash risk between the counties.
+
+# Regression Model
+
+A linear regression model was used to see whether crash rate is associated with the proportions of speed-related crashes, DUI crashes, and distracted-driving crashes.
+
+```{r}
+model <- lm(Crash_Rate ~ SpeedPercent + DUIPercent + DistractedPercent, data = crash)
+
+summary(model)
+```
+## Interpretation
+
+The regression model examines how crash rates are related to speeding, DUI, and distracted driving.
+
+The coefficients show how much the crash rate is expected to change when each factor increases, holding the others constant. Variables with smaller p-values (typically less than 0.05) are considered statistically significant predictors.
+
+If speeding has the largest coefficient and is statistically significant, this suggests that it is the strongest contributor to higher crash rates among the counties studied. Similarly, significant DUI or distracted driving variables indicate their importance in explaining crash behavior.
+
+The \(R^2\) value shows how much of the variation in crash rates is explained by the model. A higher value indicates a better fit.
+
+
+
+# Conclusion
+
+This analysis compared selected Texas counties using crash rates, fatal crash rates, confidence intervals, and regression modeling.
+
+While Harris County has the largest number of crashes, this is largely due to its large population. When adjusting for population using crash rates, Harris County may or may not rank as the highest, depending on the data.
+
+The regression results suggest that driver behavior factors such as speeding, DUI, and distracted driving play a significant role in determining crash rates. Among these, the most influential factor can be identified based on the model coefficients and statistical significance.
+
+Overall, the results show that determining the "worst drivers" is not simply about total crashes, but about relative risk and contributing behaviors.
+
+# Possible Next Steps
+
+There are several ways this project could be expanded:
+
+compare Harris County to all Texas counties instead of only a selected group
+add more explanatory variables, such as rural versus urban road type
+analyze fatal crash rate as a second regression response
+create a slide presentation based on the main tables and graphs
+
+
+
+

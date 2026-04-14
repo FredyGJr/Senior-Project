@@ -1,0 +1,414 @@
+---
+title: "Are Harris County Drivers the Worst in Texas?"
+subtitle: "An Editable Beamer Presentation"
+author: "Fredy Guevara"
+date: "`r Sys.Date()`"
+output:
+  beamer_presentation:
+    theme: Madrid
+    colortheme: dolphin
+    fonttheme: structurebold
+    keep_tex: true
+    slide_level: 2
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{amsmath}
+  - \usepackage{array}
+  - \setbeamertemplate{navigation symbols}{}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 8,
+  fig.height = 4.8,
+  fig.align = "center"
+)
+
+library(tidyverse)
+
+# ---- Data import ----
+crash <- read.csv("Crash_Data_2024.csv")
+
+# ---- Data cleaning ----
+crash <- crash %>%
+  mutate(
+    Total_Crashes = as.numeric(gsub(",", "", Total_Crashes)),
+    Population = as.numeric(gsub(",", "", Population)),
+    Fatal_Crashes = as.numeric(gsub(",", "", Fatal_Crashes)),
+    Speed_Crashes = as.numeric(gsub(",", "", Speed_Crashes)),
+    DUI_Crashes = as.numeric(gsub(",", "", DUI_Crashes)),
+    Distracted_Crashes = as.numeric(gsub(",", "", Distracted_Crashes)),
+    Serious_Crashes = as.numeric(gsub(",", "", Serious_Crashes)),
+    Minor_Crashes = as.numeric(gsub(",", "", Minor_Crashes))
+  ) %>%
+  mutate(
+    Crash_Rate = (Total_Crashes / Population) * 100000,
+    Fatal_Rate = (Fatal_Crashes / Population) * 100000,
+    SpeedPercent = Speed_Crashes / Total_Crashes,
+    DUIPercent = DUI_Crashes / Total_Crashes,
+    DistractedPercent = Distracted_Crashes / Total_Crashes,
+    SeverityPercent = (Fatal_Crashes + Serious_Crashes) / Total_Crashes
+  )
+
+# ---- Ranked tables ----
+rank_crash <- crash %>%
+  arrange(desc(Crash_Rate)) %>%
+  select(County, Crash_Rate, Total_Crashes, Population)
+
+rank_fatal <- crash %>%
+  arrange(desc(Fatal_Rate)) %>%
+  select(County, Fatal_Rate, Fatal_Crashes, Population)
+
+risk_table <- crash %>%
+  select(County, SpeedPercent, DUIPercent, DistractedPercent, SeverityPercent) %>%
+  arrange(desc(SpeedPercent))
+
+# ---- Confidence intervals ----
+make_ci <- function(df, county_name) {
+  row <- df %>% filter(County == county_name)
+  p_hat <- row$Total_Crashes / row$Population
+  n <- row$Population
+  z <- 1.96
+  se <- sqrt((p_hat * (1 - p_hat)) / n)
+  tibble(
+    County = county_name,
+    Lower_CI = (p_hat - z * se) * 100000,
+    Upper_CI = (p_hat + z * se) * 100000,
+    Crash_Rate = p_hat * 100000
+  )
+}
+
+ci_compare <- bind_rows(
+  make_ci(crash, "Harris"),
+  make_ci(crash, "Montgomery")
+)
+
+# ---- Regression ----
+model <- lm(Crash_Rate ~ SpeedPercent + DUIPercent + DistractedPercent, data = crash)
+model_coef <- broom::tidy(model)
+model_fit <- broom::glance(model)
+```
+
+## Title Slide
+
+### Are Harris County Drivers the Worst in Texas?
+
+Senior project comparing selected Texas counties using crash rates, confidence intervals, and regression.
+
+\vspace{0.5cm}
+
+Selected counties: Harris, Travis, Bexar, Montgomery, Hays, Medina, Hidalgo, Hale, and Lipscomb.
+
+## Research Question
+
+### Main Question
+
+Is Harris County the county with the worst drivers among the counties in this sample?
+
+### Working Idea
+
+This project treats “worst drivers” as a question of:
+
+- crash frequency relative to population
+- fatal crash risk
+- risky driving patterns such as speeding, DUI, and distraction
+
+## Why Total Crashes Are Not Enough
+
+A large county will usually have more crashes simply because it has more people and more traffic.
+
+That means total crashes alone can be misleading.
+
+### Better comparison measures
+
+- crash rate per 100,000 people
+- fatal crash rate per 100,000 people
+- proportions involving speeding, DUI, and distracted driving
+
+## Data Source
+
+The data were gathered from the Texas Department of Transportation Motor Vehicle Crash Statistics site:
+
+\small
+\url{https://www.txdot.gov/data-maps/crash-reports-records/motor-vehicle-crash-statistics.html}
+\normalsize
+
+The county-level values were compiled from the 2024 PDF reports for total crashes, DUI crashes, distracted-driving crashes, speed-related crashes, and fatal crashes.
+
+## Counties in the Study
+
+```{r counties-slide}
+knitr::kable(
+  tibble(County = unique(crash$County)),
+  booktabs = TRUE,
+  align = "l",
+  caption = "Counties included in the analysis"
+)
+```
+
+## Dataset Structure
+
+The dataset contains raw county-level values and derived variables.
+
+### Raw variables
+
+- Population
+- Total_Crashes
+- Fatal_Crashes
+- Serious_Crashes
+- Minor_Crashes
+- Speed_Crashes
+- DUI_Crashes
+- Distracted_Crashes
+
+### Derived variables
+
+- Crash_Rate
+- Fatal_Rate
+- SpeedPercent
+- DUIPercent
+- DistractedPercent
+- SeverityPercent
+
+## Creating New Variables
+
+To compare counties fairly, several derived variables were created.
+
+\[
+\text{Crash Rate} = \frac{\text{Total Crashes}}{\text{Population}} \times 100{,}000
+\]
+
+\[
+\text{Fatal Crash Rate} = \frac{\text{Fatal Crashes}}{\text{Population}} \times 100{,}000
+\]
+
+\[
+\text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
+\]
+
+\[
+\text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
+\]
+
+\[
+\text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
+\]
+
+## Severity Measure
+
+To capture how dangerous crashes are, I also used:
+
+\[
+\text{Severity Percent} = \frac{\text{Fatal Crashes} + \text{Serious Crashes}}{\text{Total Crashes}}
+\]
+
+This measure helps distinguish between counties that have many crashes and counties that have more severe crashes.
+
+## Summary of Derived Variables
+
+```{r derived-table}
+knitr::kable(
+  crash %>%
+    select(County, Crash_Rate, Fatal_Rate, SpeedPercent, DUIPercent, DistractedPercent, SeverityPercent) %>%
+    mutate(across(where(is.numeric), ~ round(.x, 4))) %>%
+    arrange(desc(Crash_Rate)),
+  booktabs = TRUE,
+  caption = "Derived variables used in the analysis"
+)
+```
+
+## Ranking Counties by Crash Rate
+
+```{r crash-rank-table}
+knitr::kable(
+  rank_crash %>% mutate(Crash_Rate = round(Crash_Rate, 2)),
+  booktabs = TRUE,
+  caption = "Counties ranked by crash rate per 100,000"
+)
+```
+
+### Brief interpretation
+
+Ranking by crash rate is more meaningful than ranking by total crashes because it adjusts for county size.
+
+## Crash Rate by County
+
+```{r crash-rate-plot}
+ggplot(crash, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Crash Rate per 100,000 by County",
+    x = "County",
+    y = "Crash Rate"
+  ) +
+  theme_minimal(base_size = 16)
+```
+
+### Brief interpretation
+
+If Harris County is near the top of this chart, that supports the claim that Houston-area drivers face a higher crash risk. If several counties are close, then Harris may not be uniquely worst.
+
+## Ranking Counties by Fatal Crash Rate
+
+```{r fatal-rank-table}
+knitr::kable(
+  rank_fatal %>% mutate(Fatal_Rate = round(Fatal_Rate, 2)),
+  booktabs = TRUE,
+  caption = "Counties ranked by fatal crash rate per 100,000"
+)
+```
+
+### Brief interpretation
+
+Fatal crash rate focuses on severity rather than frequency, so it can highlight counties where crashes are less common but more dangerous.
+
+## Risk Factor Table
+
+```{r risk-factor-table}
+knitr::kable(
+  risk_table %>% mutate(across(-County, ~ round(.x, 4))),
+  booktabs = TRUE,
+  caption = "Risk-factor proportions by county"
+)
+```
+
+### Brief interpretation
+
+These percentages help explain why crash rates differ across counties. High values suggest that risky behavior may contribute to county-level differences.
+
+## Speeding vs Crash Rate
+
+```{r speed-vs-crash}
+ggplot(crash, aes(x = SpeedPercent, y = Crash_Rate, label = County)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_text(nudge_y = 35, size = 3) +
+  labs(
+    title = "Speeding vs Crash Rate",
+    x = "Proportion of Crashes Involving Speed",
+    y = "Crash Rate per 100,000"
+  ) +
+  theme_minimal(base_size = 16)
+```
+
+### Brief interpretation
+
+An upward trend would suggest that counties with more speed-related crashes also tend to have higher crash rates.
+
+## Distracted Driving vs Crash Rate
+
+```{r distracted-vs-crash}
+ggplot(crash, aes(x = DistractedPercent, y = Crash_Rate, label = County)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_text(nudge_y = 35, size = 3) +
+  labs(
+    title = "Distracted Driving vs Crash Rate",
+    x = "Proportion of Crashes Involving Distracted Driving",
+    y = "Crash Rate per 100,000"
+  ) +
+  theme_minimal(base_size = 16)
+```
+
+### Brief interpretation
+
+This plot checks whether distracted driving is associated with higher crash rates across the sample counties.
+
+## Confidence Interval Setup
+
+To estimate the true county crash proportion, I used:
+
+\[
+\hat{p} = \frac{\text{Total Crashes}}{\text{Population}}
+\]
+
+\[
+\hat{p} \pm z \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+\]
+
+where \(z = 1.96\) for a 95\% confidence level.
+
+## Confidence Intervals: Harris vs Montgomery
+
+```{r ci-table}
+knitr::kable(
+  ci_compare %>% mutate(across(-County, ~ round(.x, 2))),
+  booktabs = TRUE,
+  caption = "95% confidence intervals for crash rate per 100,000"
+)
+```
+
+### Brief interpretation
+
+If the two intervals overlap a lot, then the difference between Harris and Montgomery may not be statistically meaningful.
+
+## Regression Model
+
+The regression model used was:
+
+\[
+\text{Crash Rate} = \beta_0 + \beta_1(\text{SpeedPercent}) + \beta_2(\text{DUIPercent}) + \beta_3(\text{DistractedPercent}) + \varepsilon
+\]
+
+This model tests whether crash rate is associated with speeding, DUI, and distracted-driving shares.
+
+## Regression Output
+
+```{r regression-table}
+knitr::kable(
+  model_coef %>% mutate(across(where(is.numeric), ~ round(.x, 4))),
+  booktabs = TRUE,
+  caption = "Regression coefficients"
+)
+```
+
+## Model Fit
+
+```{r model-fit}
+knitr::kable(
+  model_fit %>%
+    select(r.squared, adj.r.squared, sigma, statistic, p.value) %>%
+    mutate(across(everything(), ~ round(.x, 4))),
+  booktabs = TRUE,
+  caption = "Regression model fit"
+)
+```
+
+### Brief interpretation
+
+The coefficients show the direction and size of each relationship. Smaller p-values suggest stronger evidence that a variable matters. The \(R^2\) value shows how much of the variation in crash rates is explained by the model.
+
+## Main Takeaways
+
+- Total crashes are not enough to identify the “worst drivers.”
+- Crash rate and fatal crash rate provide fairer county comparisons.
+- Risk-factor percentages help explain why counties differ.
+- Harris County should be judged by rate-based measures, not just size.
+
+## Limitations
+
+- The sample includes selected counties rather than all Texas counties.
+- County-level analysis cannot identify individual driver behavior.
+- Population-based crash rates are useful, but vehicle miles traveled would be an even stronger exposure measure.
+- Small counties may produce unstable percentages because of low counts.
+
+## Conclusion
+
+This project uses rates, confidence intervals, and regression to study whether Harris County stands out as having the worst drivers among the selected counties.
+
+The final answer depends on whether Harris ranks highest after adjusting for population and whether its estimated crash rate is clearly different from comparable counties.
+
+## Appendix: Editable Notes
+
+### Future edits
+
+- Replace short interpretations with your own spoken conclusions.
+- Add or remove slides by using `##` headings.
+- Change theme, colors, and font in the YAML block.
+- Swap HTML tables for smaller slide tables if needed.
+- Add one slide with your final conclusion after reviewing your outputs.
+
