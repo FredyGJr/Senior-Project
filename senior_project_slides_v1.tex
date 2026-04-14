@@ -56,7 +56,6 @@
 \fi
 \usepackage{lmodern}
 \usetheme[]{Madrid}
-\usecolortheme[]{dolphin}
 \usefonttheme[]{structurebold}
 \ifPDFTeX\else
   % xetex/luatex font selection
@@ -87,6 +86,22 @@
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{navigation symbols}{}
+\definecolor{RoadYellow}{RGB}{242,204,0}
+\definecolor{RoadBlack}{RGB}{20,20,20}
+\definecolor{RoadGray}{RGB}{245,245,245}
+\setbeamercolor{palette primary}{bg=RoadBlack, fg=RoadYellow}
+\setbeamercolor{palette secondary}{bg=RoadBlack, fg=white}
+\setbeamercolor{palette tertiary}{bg=RoadYellow, fg=RoadBlack}
+\setbeamercolor{palette quaternary}{bg=RoadBlack, fg=white}
+\setbeamercolor{structure}{fg=RoadYellow}
+\setbeamercolor{title}{fg=RoadYellow}
+\setbeamercolor{frametitle}{bg=RoadBlack, fg=RoadYellow}
+\setbeamercolor{normal text}{fg=black, bg=white}
+\setbeamercolor{block title}{bg=RoadBlack, fg=RoadYellow}
+\setbeamercolor{block body}{bg=RoadGray, fg=black}
+\setbeamercolor{item}{fg=RoadYellow}
 \setbeamertemplate{footline}{}
 \setbeamertemplate{navigation symbols}{}
 \usepackage{bookmark}
@@ -215,18 +230,6 @@ To compare counties fairly, several derived variables were created.
 \]
 \end{frame}
 
-\begin{frame}{Severity Measure}
-\phantomsection\label{severity-measure}
-To capture how dangerous crashes are, I also used:
-
-\[
-\text{Severity Percent} = \frac{\text{Fatal Crashes} + \text{Serious Crashes}}{\text{Total Crashes}}
-\]
-
-This measure helps distinguish between counties that have many crashes
-and counties that have more severe crashes.
-\end{frame}
-
 \begin{frame}{Summary of Derived Variables}
 \phantomsection\label{summary-of-derived-variables}
 \begin{longtable}[]{@{}
@@ -305,23 +308,51 @@ Travis & 1137.04 & 15872 & 1395906 \\
 Lipscomb & 910.75 & 25 & 2745 \\
 \bottomrule\noalign{}
 \end{longtable}
+\end{frame}
 
-\begin{block}{Brief interpretation}
-\phantomsection\label{brief-interpretation}
-Ranking by crash rate is more meaningful than ranking by total crashes
-because it adjusts for county size.
-\end{block}
+\begin{frame}{Crash Rate per 100,000 People}
+\phantomsection\label{crash-rate-per-100000-people}
+\begin{itemize}
+\tightlist
+\item
+  Harris County: 2301.7 (highest)
+\item
+  Bexar County: 2238.5 (very close)
+\item
+  Travis County: 1137 (lowest among large counties)
+\item
+  Lipscomb County: 910.7 (lowest overall)
+\end{itemize}
+
+Harris has the highest crash rate, but only slightly higher than Bexar.
 \end{frame}
 
 \begin{frame}{Crash Rate by County}
 \phantomsection\label{crash-rate-by-county}
 \begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/unnamed-chunk-1-1} \end{center}
+\end{frame}
 
-\begin{block}{Brief interpretation}
-\phantomsection\label{brief-interpretation-1}
-If Harris County is near the top of this chart, that supports the claim
-that Houston-area drivers face a higher crash risk. If several counties
-are close, then Harris may not be uniquely worst.
+\begin{frame}{Does Harris Have the Worst Drivers?}
+\phantomsection\label{does-harris-have-the-worst-drivers}
+\begin{itemize}
+\tightlist
+\item
+  Harris County has the highest crash rate
+\item
+  However:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    difference from Bexar is small
+  \item
+    not dramatically worse than other large counties
+  \end{itemize}
+\end{itemize}
+
+\begin{block}{Conclusion}
+\phantomsection\label{conclusion}
+Houston is not overwhelmingly worse, just slightly higher.
 \end{block}
 \end{frame}
 
@@ -350,7 +381,7 @@ Hidalgo & 6.14 & 57 & 928384 \\
 \end{longtable}
 
 \begin{block}{Brief interpretation}
-\phantomsection\label{brief-interpretation-2}
+\phantomsection\label{brief-interpretation}
 Fatal crash rate focuses on severity rather than frequency, so it can
 highlight counties where crashes are less common but more dangerous.
 \end{block}
@@ -404,12 +435,41 @@ Travis & 0.1920 & 0.0745 & 0.3235 & 0.0410 \\
 Bexar & 0.1549 & 0.0341 & 0.3660 & 0.0202 \\
 \bottomrule\noalign{}
 \end{longtable}
+\end{frame}
 
-\begin{block}{Brief interpretation}
-\phantomsection\label{brief-interpretation-3}
-These percentages help explain why crash rates differ across counties.
-High values suggest that risky behavior may contribute to county-level
-differences.
+\begin{frame}{Driving Behavior Across Counties}
+\phantomsection\label{driving-behavior-across-counties}
+\begin{itemize}
+\tightlist
+\item
+  Speed-related crashes:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    moderate across most counties
+  \end{itemize}
+\item
+  DUI crashes:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    relatively low percentages
+  \end{itemize}
+\item
+  Distracted driving:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    high in multiple counties, especially urban counties
+  \end{itemize}
+\end{itemize}
+
+\begin{block}{Insight}
+\phantomsection\label{insight}
+Risk behaviors vary, but no single factor dominates.
 \end{block}
 \end{frame}
 
@@ -418,7 +478,7 @@ differences.
 \begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/unnamed-chunk-2-1} \end{center}
 
 \begin{block}{Brief interpretation}
-\phantomsection\label{brief-interpretation-4}
+\phantomsection\label{brief-interpretation-1}
 An upward trend would suggest that counties with more speed-related
 crashes also tend to have higher crash rates.
 \end{block}
@@ -429,66 +489,125 @@ crashes also tend to have higher crash rates.
 \begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/unnamed-chunk-3-1} \end{center}
 
 \begin{block}{Brief interpretation}
-\phantomsection\label{brief-interpretation-5}
+\phantomsection\label{brief-interpretation-2}
 This plot checks whether distracted driving is associated with higher
 crash rates across the sample counties.
 \end{block}
 \end{frame}
 
-\begin{frame}{Confidence Interval Setup}
-\phantomsection\label{confidence-interval-setup}
-To estimate the true county crash proportion, I used:
+\begin{frame}{Confidence Intervals for County Crash Rates}
+\phantomsection\label{confidence-intervals-for-county-crash-rates}
+To estimate the true crash rate for each county, I used a 95\%
+confidence interval.
 
 \[
-\hat{p} = \frac{\text{Total Crashes}}{\text{Population}}
+\hat{p}=\frac{\text{Total Crashes}}{\text{Population}}
 \]
 
 \[
-\hat{p} \pm z \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+\hat{p}\pm 1.96\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
 \]
 
-where \(z = 1.96\) for a 95\% confidence level.
+where:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\hat{p}\) = observed crash proportion
+\item
+  \(n\) = county population
+\item
+  \(1.96\) gives a 95\% confidence level
+\end{itemize}
+
+\begin{block}{Purpose}
+\phantomsection\label{purpose}
+This helps show whether differences in county crash rates are likely to
+be meaningful or just due to random variation.
+\end{block}
 \end{frame}
 
-\begin{frame}{Confidence Intervals: Harris vs Montgomery}
-\phantomsection\label{confidence-intervals-harris-vs-montgomery}
-\begin{longtable}[]{@{}lrrr@{}}
-\caption{95\% confidence intervals for crash rate per
-100,000}\tabularnewline
-\toprule\noalign{}
-County & Lower\_CI & Upper\_CI & Crash\_Rate \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-County & Lower\_CI & Upper\_CI & Crash\_Rate \\
-\midrule\noalign{}
-\endhead
-Harris & 2288.53 & 2314.81 & 2301.67 \\
-Montgomery & 1564.46 & 1620.18 & 1592.32 \\
-\bottomrule\noalign{}
-\end{longtable}
+\begin{frame}{95\% Confidence Intervals by County}
+\phantomsection\label{confidence-intervals-by-county}
+\textbackslash begin\{table\}
 
-\begin{block}{Brief interpretation}
-\phantomsection\label{brief-interpretation-6}
-If the two intervals overlap a lot, then the difference between Harris
-and Montgomery may not be statistically meaningful.
+\textbackslash caption\{\label{tab:ci-all-table}Crash rates and 95\%
+confidence intervals per 100,000 residents\} \centering
+
+\begin{tabular}[t]{lrrr}
+\toprule
+County & Crash\_Rate & Lower\_CI & Upper\_CI\\
+\midrule
+Harris & 2301.67 & 2288.53 & 2314.81\\
+Travis & 1137.04 & 1119.45 & 1154.63\\
+Bexar & 2238.55 & 2218.85 & 2258.24\\
+Montgomery & 1592.32 & 1564.46 & 1620.18\\
+Hays & 1221.68 & 1182.03 & 1261.33\\
+\addlinespace
+Medina & 1475.81 & 1376.51 & 1575.11\\
+Hidalgo & 1788.16 & 1761.20 & 1815.12\\
+Hale & 1437.02 & 1306.21 & 1567.82\\
+Lipscomb & 910.75 & 555.36 & 1266.13\\
+\bottomrule
+\end{tabular}
+
+\textbackslash end\{table\}
+\end{frame}
+
+\begin{frame}{Crash Rates with 95\% Confidence Intervals}
+\phantomsection\label{crash-rates-with-95-confidence-intervals}
+\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/ci-all-plot-1} \end{center}
+\end{frame}
+
+\begin{frame}{Interpreting the Confidence Intervals}
+\phantomsection\label{interpreting-the-confidence-intervals}
+\begin{itemize}
+\tightlist
+\item
+  If two counties have intervals that do not overlap, that suggests
+  stronger evidence that their crash rates are different
+\item
+  If two counties have intervals that overlap a lot, then the difference
+  may not be statistically meaningful
+\end{itemize}
+
+\begin{block}{Harris vs Montgomery}
+\phantomsection\label{harris-vs-montgomery}
+\begin{itemize}
+\tightlist
+\item
+  Harris County has a higher observed crash rate than Montgomery County
+\item
+  But if their intervals overlap, then the data does not clearly show
+  that Harris is worse
+\item
+  This matters because neighboring counties may share highways, commuter
+  traffic, and similar driving environments
+\end{itemize}
+\end{block}
+
+\begin{block}{Main Point}
+\phantomsection\label{main-point}
+Confidence intervals help move the project beyond simple ranking and
+toward statistical comparison.
 \end{block}
 \end{frame}
 
 \begin{frame}{Regression Model}
 \phantomsection\label{regression-model}
-The regression model used was:
-
 \[
-\text{Crash Rate} = \beta_0 + \beta_1(\text{SpeedPercent}) + \beta_2(\text{DUIPercent}) + \beta_3(\text{DistractedPercent}) + \varepsilon
+\text{Crash Rate}=\beta_0+\beta_1(\text{SpeedPercent})+\beta_2(\text{DUIPercent})+\beta_3(\text{DistractedPercent})+\varepsilon
 \]
 
-This model tests whether crash rate is associated with speeding, DUI,
-and distracted-driving shares.
+\begin{itemize}
+\tightlist
+\item
+  Goal: identify which behaviors increase crash rates
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Regression Output}
-\phantomsection\label{regression-output}
+\begin{frame}{Are the results significant?}
+\phantomsection\label{are-the-results-significant}
 \begin{longtable}[]{@{}lrrrr@{}}
 \caption{Regression coefficients}\tabularnewline
 \toprule\noalign{}
@@ -505,10 +624,23 @@ DUIPercent & -16501.027 & 14148.702 & -1.1663 & 0.2961 \\
 DistractedPercent & 4237.233 & 3694.462 & 1.1469 & 0.3033 \\
 \bottomrule\noalign{}
 \end{longtable}
+
+\begin{itemize}
+\tightlist
+\item
+  All p-values \textgreater{} 0.05
+\item
+  None of the variables are statistically significant
+\end{itemize}
+
+\begin{block}{Interpretation}
+\phantomsection\label{interpretation}
+We cannot confidently say any factor causes higher crash rates.
+\end{block}
 \end{frame}
 
-\begin{frame}{Model Fit}
-\phantomsection\label{model-fit}
+\begin{frame}{Regression Findings}
+\phantomsection\label{regression-findings}
 \begin{longtable}[]{@{}rrrrr@{}}
 \caption{Regression model fit}\tabularnewline
 \toprule\noalign{}
@@ -523,28 +655,56 @@ r.squared & adj.r.squared & sigma & statistic & p.value \\
 \bottomrule\noalign{}
 \end{longtable}
 
-\begin{block}{Brief interpretation}
-\phantomsection\label{brief-interpretation-7}
-The coefficients show the direction and size of each relationship.
-Smaller p-values suggest stronger evidence that a variable matters. The
-\(R^2\) value shows how much of the variation in crash rates is
-explained by the model.
-\end{block}
-\end{frame}
-
-\begin{frame}{Main Takeaways}
-\phantomsection\label{main-takeaways}
 \begin{itemize}
 \tightlist
 \item
-  Total crashes are not enough to identify the ``worst drivers.''
+  \(R^2 = 0.25\)
 \item
-  Crash rate and fatal crash rate provide fairer county comparisons.
-\item
-  Risk-factor percentages help explain why counties differ.
-\item
-  Harris County should be judged by rate-based measures, not just size.
+  Model explains only about 25\% of the variation
 \end{itemize}
+
+\begin{block}{Coefficients}
+\phantomsection\label{coefficients}
+\begin{itemize}
+\tightlist
+\item
+  Speed → positive effect
+\item
+  Distracted → positive effect
+\item
+  DUI → unclear or negative effect
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Interpretation of Results}
+\phantomsection\label{interpretation-of-results}
+Crash rates are not fully explained by:
+
+\begin{itemize}
+\tightlist
+\item
+  Speed
+\item
+  DUI
+\item
+  Distracted driving
+\end{itemize}
+
+\begin{block}{Likely Explanation}
+\phantomsection\label{likely-explanation}
+Other factors may matter more:
+
+\begin{itemize}
+\tightlist
+\item
+  Traffic density
+\item
+  Urban congestion
+\item
+  Road design
+\end{itemize}
+\end{block}
 \end{frame}
 
 \begin{frame}{Limitations}
@@ -552,26 +712,41 @@ explained by the model.
 \begin{itemize}
 \tightlist
 \item
-  The sample includes selected counties rather than all Texas counties.
+  Small sample size (\(n = 9\) counties)
 \item
-  County-level analysis cannot identify individual driver behavior.
+  Limited variables
 \item
-  Population-based crash rates are useful, but vehicle miles traveled
-  would be an even stronger exposure measure.
-\item
-  Small counties may produce unstable percentages because of low counts.
+  Regression results are not statistically significant
 \end{itemize}
+
+\begin{block}{Implication}
+\phantomsection\label{implication}
+The results suggest trends, but not definitive causation.
+\end{block}
 \end{frame}
 
-\begin{frame}{Conclusion}
-\phantomsection\label{conclusion}
-This project uses rates, confidence intervals, and regression to study
-whether Harris County stands out as having the worst drivers among the
-selected counties.
+\begin{frame}{Final Conclusion}
+\phantomsection\label{final-conclusion}
+\begin{itemize}
+\tightlist
+\item
+  Harris County has the highest crash rate
+\item
+  But:
 
-The final answer depends on whether Harris ranks highest after adjusting
-for population and whether its estimated crash rate is clearly different
-from comparable counties.
+  \begin{itemize}
+  \tightlist
+  \item
+    only slightly higher than Bexar
+  \item
+    not strongly explained by driver behavior
+  \end{itemize}
+\end{itemize}
+
+\begin{block}{Final Answer}
+\phantomsection\label{final-answer}
+Harris does not clearly have the ``worst drivers.''
+\end{block}
 \end{frame}
 
 \end{document}

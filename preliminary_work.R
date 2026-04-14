@@ -85,3 +85,32 @@ tibble(
 model <- lm(Crash_Rate ~ SpeedPercent + DUIPercent + DistractedPercent, data = crash)
 
 summary(model)
+
+
+ci_all <- crash %>%
+  mutate(
+    p_hat = Total_Crashes / Population,
+    n = Population,
+    z = 1.96,
+    se = sqrt((p_hat * (1 - p_hat)) / n),
+    Lower_CI = (p_hat - z * se) * 100000,
+    Upper_CI = (p_hat + z * se) * 100000,
+    Crash_Rate = p_hat * 100000
+  ) %>%
+  select(County, Crash_Rate, Lower_CI, Upper_CI)
+
+knitr::kable(
+  ci_all %>% mutate(across(-County, ~ round(.x, 2))),
+  booktabs = TRUE,
+  caption = "95% Confidence Intervals for Crash Rates"
+)
+
+ggplot(ci_all, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = Lower_CI, ymax = Upper_CI), width = 0.2) +
+  coord_flip() +
+  labs(
+    title = "Crash Rates with 95% Confidence Intervals",
+    x = "County",
+    y = "Crash Rate per 100,000"
+  )

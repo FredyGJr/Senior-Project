@@ -116,6 +116,18 @@ travis_rate <- crash %>% filter(County == "Travis") %>% pull(Crash_Rate)
 lipscomb_rate <- crash %>% filter(County == "Lipscomb") %>% pull(Crash_Rate)
 
 r2_val <- model_fit$r.squared
+
+ci_all <- crash %>%
+  mutate(
+    p_hat = Total_Crashes / Population,
+    n = Population,
+    z = 1.96,
+    se = sqrt((p_hat * (1 - p_hat)) / n),
+    Lower_CI = (p_hat - z * se) * 100000,
+    Upper_CI = (p_hat + z * se) * 100000,
+    Crash_Rate = p_hat * 100000
+  ) %>%
+  select(County, Crash_Rate, Lower_CI, Upper_CI)
 ```
 
 ## 
@@ -207,16 +219,6 @@ knitr::kable(
 )
 ```
 
-## Crash Rate per 100,000 People
-
-- Harris County: `r round(harris_rate, 1)` (highest)
-- Bexar County: `r round(bexar_rate, 1)` (very close)
-- Travis County: `r round(travis_rate, 1)` (lowest among large counties)
-- Lipscomb County: `r round(lipscomb_rate, 1)` (lowest overall)
-
-### Key Insight
-
-Harris has the highest crash rate, but only slightly higher than Bexar. 
 
 ## Ranking Counties by Crash Rate
 
@@ -338,33 +340,69 @@ ggplot(crash, aes(x = DistractedPercent, y = Crash_Rate, label = County)) +
 
 This plot checks whether distracted driving is associated with higher crash rates across the sample counties.
 
-## Confidence Interval Setup
+## Confidence Intervals for County Crash Rates
 
-To estimate the true county crash proportion, I used:
+To estimate the true crash rate for each county, I used a 95\% confidence interval.
 
 \[
-\hat{p} = \frac{\text{Total Crashes}}{\text{Population}}
+\hat{p}=\frac{\text{Total Crashes}}{\text{Population}}
 \]
 
 \[
-\hat{p} \pm z \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+\hat{p}\pm 1.96\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
 \]
 
-where \(z = 1.96\) for a 95\% confidence level.
+where:
 
-## Confidence Intervals: Harris vs Montgomery
+- \(\hat{p}\) = observed crash proportion
+- \(n\) = county population
+- \(1.96\) gives a 95\% confidence level
 
-```{r ci-table}
+### Purpose
+
+This helps show whether differences in county crash rates are likely to be meaningful or just due to random variation. 
+
+## 95\% Confidence Intervals by County
+
+```{r ci-all-table, results='asis'}
 knitr::kable(
-  ci_compare %>% mutate(across(-County, ~ round(.x, 2))),
+  ci_all %>% mutate(across(-County, ~ round(.x, 2))),
+  format = "latex",
   booktabs = TRUE,
-  caption = "95% confidence intervals for crash rate per 100,000"
+  caption = "Crash rates and 95% confidence intervals per 100,000 residents"
 )
 ```
 
-### Brief interpretation
 
-If the two intervals overlap a lot, then the difference between Harris and Montgomery may not be statistically meaningful.
+
+## Crash Rates with 95\% Confidence Intervals
+
+```{r ci-all-plot, fig.width=6.8, fig.height=4.2}
+ggplot(ci_all, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
+  geom_point(size = 2.8) +
+  geom_errorbar(aes(ymin = Lower_CI, ymax = Upper_CI), width = 0.2) +
+  coord_flip() +
+  labs(
+    title = "Crash Rates with 95% Confidence Intervals",
+    x = "County",
+    y = "Crash Rate per 100,000"
+  ) +
+  theme_minimal(base_size = 15)
+```
+## Interpreting the Confidence Intervals
+
+- If two counties have intervals that do not overlap, that suggests stronger evidence that their crash rates are different
+- If two counties have intervals that overlap a lot, then the difference may not be statistically meaningful
+
+### Harris vs Montgomery
+
+- Harris County has a higher observed crash rate than Montgomery County
+- But if their intervals overlap, then the data does not clearly show that Harris is worse
+- This matters because neighboring counties may share highways, commuter traffic, and similar driving environments
+
+### Main Point
+
+Confidence intervals help move the project beyond simple ranking and toward statistical comparison.
 
 ## Regression Model
 
