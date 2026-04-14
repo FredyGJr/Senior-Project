@@ -9,11 +9,8 @@ output:
     colortheme: dolphin
     fonttheme: structurebold
     keep_tex: true
-    slide_level: 2
 header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{amsmath}
-  - \usepackage{array}
+  - \setbeamertemplate{footline}{}
   - \setbeamertemplate{navigation symbols}{}
 ---
 
