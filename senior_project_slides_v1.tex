@@ -3,7 +3,7 @@
 \PassOptionsToPackage{hyphens}{url}
 \documentclass[
   ignorenonframetext,
-]{beamer}
+  aspectratio=169]{beamer}
 \newif\ifbibliography
 \usepackage{pgfpages}
 \setbeamertemplate{caption}[numbered]
@@ -87,9 +87,7 @@
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\usepackage{booktabs}
-\usepackage{amsmath}
-\usepackage{array}
+\setbeamertemplate{footline}{}
 \setbeamertemplate{navigation symbols}{}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -108,8 +106,8 @@
 \begin{document}
 \frame{\titlepage}
 
-\begin{frame}{Title Slide}
-\phantomsection\label{title-slide}
+\begin{frame}{}
+\phantomsection\label{section}
 \begin{block}{Are Harris County Drivers the Worst in Texas?}
 \phantomsection\label{are-harris-county-drivers-the-worst-in-texas}
 Senior project comparing selected Texas counties using crash rates,
@@ -167,21 +165,6 @@ That means total crashes alone can be misleading.
 \end{block}
 \end{frame}
 
-\begin{frame}{Data Source}
-\phantomsection\label{data-source}
-The data were gathered from the Texas Department of Transportation Motor
-Vehicle Crash Statistics site:
-
-\small
-
-\url{https://www.txdot.gov/data-maps/crash-reports-records/motor-vehicle-crash-statistics.html}
-\normalsize
-
-The county-level values were compiled from the 2024 PDF reports for
-total crashes, DUI crashes, distracted-driving crashes, speed-related
-crashes, and fatal crashes.
-\end{frame}
-
 \begin{frame}{Counties in the Study}
 \phantomsection\label{counties-in-the-study}
 \begin{longtable}[]{@{}l@{}}
@@ -205,53 +188,6 @@ Hale \\
 Lipscomb \\
 \bottomrule\noalign{}
 \end{longtable}
-\end{frame}
-
-\begin{frame}{Dataset Structure}
-\phantomsection\label{dataset-structure}
-The dataset contains raw county-level values and derived variables.
-
-\begin{block}{Raw variables}
-\phantomsection\label{raw-variables}
-\begin{itemize}
-\tightlist
-\item
-  Population
-\item
-  Total\_Crashes
-\item
-  Fatal\_Crashes
-\item
-  Serious\_Crashes
-\item
-  Minor\_Crashes
-\item
-  Speed\_Crashes
-\item
-  DUI\_Crashes
-\item
-  Distracted\_Crashes
-\end{itemize}
-\end{block}
-
-\begin{block}{Derived variables}
-\phantomsection\label{derived-variables}
-\begin{itemize}
-\tightlist
-\item
-  Crash\_Rate
-\item
-  Fatal\_Rate
-\item
-  SpeedPercent
-\item
-  DUIPercent
-\item
-  DistractedPercent
-\item
-  SeverityPercent
-\end{itemize}
-\end{block}
 \end{frame}
 
 \begin{frame}{Creating New Variables}
@@ -641,26 +577,6 @@ selected counties.
 The final answer depends on whether Harris ranks highest after adjusting
 for population and whether its estimated crash rate is clearly different
 from comparable counties.
-\end{frame}
-
-\begin{frame}[fragile]{Appendix: Editable Notes}
-\phantomsection\label{appendix-editable-notes}
-\begin{block}{Future edits}
-\phantomsection\label{future-edits}
-\begin{itemize}
-\tightlist
-\item
-  Replace short interpretations with your own spoken conclusions.
-\item
-  Add or remove slides by using \texttt{\#\#} headings.
-\item
-  Change theme, colors, and font in the YAML block.
-\item
-  Swap HTML tables for smaller slide tables if needed.
-\item
-  Add one slide with your final conclusion after reviewing your outputs.
-\end{itemize}
-\end{block}
 \end{frame}
 
 \end{document}

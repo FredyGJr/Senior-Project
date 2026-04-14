@@ -3,6 +3,7 @@ title: "Are Harris County Drivers the Worst in Texas?"
 subtitle: "An Editable Beamer Presentation"
 author: "Fredy Guevara"
 date: "`r Sys.Date()`"
+classoption: aspectratio=169
 output:
   beamer_presentation:
     theme: Madrid
@@ -89,7 +90,7 @@ model_coef <- broom::tidy(model)
 model_fit <- broom::glance(model)
 ```
 
-## Title Slide
+## 
 
 ### Are Harris County Drivers the Worst in Texas?
 
@@ -125,15 +126,7 @@ That means total crashes alone can be misleading.
 - fatal crash rate per 100,000 people
 - proportions involving speeding, DUI, and distracted driving
 
-## Data Source
 
-The data were gathered from the Texas Department of Transportation Motor Vehicle Crash Statistics site:
-
-\small
-\url{https://www.txdot.gov/data-maps/crash-reports-records/motor-vehicle-crash-statistics.html}
-\normalsize
-
-The county-level values were compiled from the 2024 PDF reports for total crashes, DUI crashes, distracted-driving crashes, speed-related crashes, and fatal crashes.
 
 ## Counties in the Study
 
@@ -146,29 +139,7 @@ knitr::kable(
 )
 ```
 
-## Dataset Structure
 
-The dataset contains raw county-level values and derived variables.
-
-### Raw variables
-
-- Population
-- Total_Crashes
-- Fatal_Crashes
-- Serious_Crashes
-- Minor_Crashes
-- Speed_Crashes
-- DUI_Crashes
-- Distracted_Crashes
-
-### Derived variables
-
-- Crash_Rate
-- Fatal_Rate
-- SpeedPercent
-- DUIPercent
-- DistractedPercent
-- SeverityPercent
 
 ## Creating New Variables
 
@@ -399,13 +370,6 @@ This project uses rates, confidence intervals, and regression to study whether H
 
 The final answer depends on whether Harris ranks highest after adjusting for population and whether its estimated crash rate is clearly different from comparable counties.
 
-## Appendix: Editable Notes
 
-### Future edits
 
-- Replace short interpretations with your own spoken conclusions.
-- Add or remove slides by using `##` headings.
-- Change theme, colors, and font in the YAML block.
-- Swap HTML tables for smaller slide tables if needed.
-- Add one slide with your final conclusion after reviewing your outputs.
 
