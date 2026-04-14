@@ -7,10 +7,26 @@ classoption: aspectratio=169
 output:
   beamer_presentation:
     theme: Madrid
-    colortheme: dolphin
+    colortheme: default
     fonttheme: structurebold
     keep_tex: true
 header-includes:
+  - \setbeamertemplate{footline}{}
+  - \setbeamertemplate{navigation symbols}{}
+  - \definecolor{RoadYellow}{RGB}{242,204,0}
+  - \definecolor{RoadBlack}{RGB}{20,20,20}
+  - \definecolor{RoadGray}{RGB}{245,245,245}
+  - \setbeamercolor{palette primary}{bg=RoadBlack, fg=RoadYellow}
+  - \setbeamercolor{palette secondary}{bg=RoadBlack, fg=white}
+  - \setbeamercolor{palette tertiary}{bg=RoadYellow, fg=RoadBlack}
+  - \setbeamercolor{palette quaternary}{bg=RoadBlack, fg=white}
+  - \setbeamercolor{structure}{fg=RoadYellow}
+  - \setbeamercolor{title}{fg=RoadYellow}
+  - \setbeamercolor{frametitle}{bg=RoadBlack, fg=RoadYellow}
+  - \setbeamercolor{normal text}{fg=black, bg=white}
+  - \setbeamercolor{block title}{bg=RoadBlack, fg=RoadYellow}
+  - \setbeamercolor{block body}{bg=RoadGray, fg=black}
+  - \setbeamercolor{item}{fg=RoadYellow}
   - \setbeamertemplate{footline}{}
   - \setbeamertemplate{navigation symbols}{}
 ---
@@ -88,6 +104,18 @@ ci_compare <- bind_rows(
 model <- lm(Crash_Rate ~ SpeedPercent + DUIPercent + DistractedPercent, data = crash)
 model_coef <- broom::tidy(model)
 model_fit <- broom::glance(model)
+
+# ---- Key result values for slides ----
+top_crash <- crash %>%
+  arrange(desc(Crash_Rate)) %>%
+  select(County, Crash_Rate)
+
+harris_rate <- crash %>% filter(County == "Harris") %>% pull(Crash_Rate)
+bexar_rate <- crash %>% filter(County == "Bexar") %>% pull(Crash_Rate)
+travis_rate <- crash %>% filter(County == "Travis") %>% pull(Crash_Rate)
+lipscomb_rate <- crash %>% filter(County == "Lipscomb") %>% pull(Crash_Rate)
+
+r2_val <- model_fit$r.squared
 ```
 
 ## 
@@ -165,15 +193,8 @@ To compare counties fairly, several derived variables were created.
 \text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
 \]
 
-## Severity Measure
 
-To capture how dangerous crashes are, I also used:
 
-\[
-\text{Severity Percent} = \frac{\text{Fatal Crashes} + \text{Serious Crashes}}{\text{Total Crashes}}
-\]
-
-This measure helps distinguish between counties that have many crashes and counties that have more severe crashes.
 
 ## Summary of Derived Variables
 
@@ -186,6 +207,17 @@ knitr::kable(
 )
 ```
 
+## Crash Rate per 100,000 People
+
+- Harris County: `r round(harris_rate, 1)` (highest)
+- Bexar County: `r round(bexar_rate, 1)` (very close)
+- Travis County: `r round(travis_rate, 1)` (lowest among large counties)
+- Lipscomb County: `r round(lipscomb_rate, 1)` (lowest overall)
+
+### Key Insight
+
+Harris has the highest crash rate, but only slightly higher than Bexar. 
+
 ## Ranking Counties by Crash Rate
 
 ```{r crash-rank-table}
@@ -196,9 +228,14 @@ knitr::kable(
 )
 ```
 
-### Brief interpretation
+## Crash Rate per 100,000 People
 
-Ranking by crash rate is more meaningful than ranking by total crashes because it adjusts for county size.
+- Harris County: `r round(harris_rate, 1)` (highest)
+- Bexar County: `r round(bexar_rate, 1)` (very close)
+- Travis County: `r round(travis_rate, 1)` (lowest among large counties)
+- Lipscomb County: `r round(lipscomb_rate, 1)` (lowest overall)
+
+Harris has the highest crash rate, but only slightly higher than Bexar.
 
 ## Crash Rate by County
 
@@ -215,9 +252,16 @@ ggplot(crash, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
 
 ```
 
-### Brief interpretation
+## Does Harris Have the Worst Drivers?
 
-If Harris County is near the top of this chart, that supports the claim that Houston-area drivers face a higher crash risk. If several counties are close, then Harris may not be uniquely worst.
+- Harris County has the highest crash rate
+- However:
+  - difference from Bexar is small
+  - not dramatically worse than other large counties
+
+### Conclusion
+
+Houston is not overwhelmingly worse, just slightly higher.
 
 ## Ranking Counties by Fatal Crash Rate
 
@@ -243,9 +287,18 @@ knitr::kable(
 )
 ```
 
-### Brief interpretation
+## Driving Behavior Across Counties
 
-These percentages help explain why crash rates differ across counties. High values suggest that risky behavior may contribute to county-level differences.
+- Speed-related crashes:
+  - moderate across most counties
+- DUI crashes:
+  - relatively low percentages
+- Distracted driving:
+  - high in multiple counties, especially urban counties
+
+### Insight
+
+Risk behaviors vary, but no single factor dominates.
 
 ## Speeding vs Crash Rate
 
@@ -315,15 +368,13 @@ If the two intervals overlap a lot, then the difference between Harris and Montg
 
 ## Regression Model
 
-The regression model used was:
-
 \[
-\text{Crash Rate} = \beta_0 + \beta_1(\text{SpeedPercent}) + \beta_2(\text{DUIPercent}) + \beta_3(\text{DistractedPercent}) + \varepsilon
+\text{Crash Rate}=\beta_0+\beta_1(\text{SpeedPercent})+\beta_2(\text{DUIPercent})+\beta_3(\text{DistractedPercent})+\varepsilon
 \]
 
-This model tests whether crash rate is associated with speeding, DUI, and distracted-driving shares.
+- Goal: identify which behaviors increase crash rates
 
-## Regression Output
+## Are the results significant?
 
 ```{r regression-table}
 knitr::kable(
@@ -333,7 +384,14 @@ knitr::kable(
 )
 ```
 
-## Model Fit
+- All p-values > 0.05
+- None of the variables are statistically significant
+
+### Interpretation
+
+We cannot confidently say any factor causes higher crash rates.
+
+## Regression Findings
 
 ```{r model-fit}
 knitr::kable(
@@ -345,29 +403,51 @@ knitr::kable(
 )
 ```
 
-### Brief interpretation
+- \(R^2 = `r round(r2_val, 2)`\)
+- Model explains only about `r round(r2_val*100, 0)`\% of the variation
 
-The coefficients show the direction and size of each relationship. Smaller p-values suggest stronger evidence that a variable matters. The \(R^2\) value shows how much of the variation in crash rates is explained by the model.
+### Coefficients
 
-## Main Takeaways
+- Speed → positive effect
+- Distracted → positive effect
+- DUI → unclear or negative effect
 
-- Total crashes are not enough to identify the “worst drivers.”
-- Crash rate and fatal crash rate provide fairer county comparisons.
-- Risk-factor percentages help explain why counties differ.
-- Harris County should be judged by rate-based measures, not just size.
+## Interpretation of Results
+
+Crash rates are not fully explained by:
+
+- Speed
+- DUI
+- Distracted driving
+
+### Likely Explanation
+
+Other factors may matter more:
+
+- Traffic density
+- Urban congestion
+- Road design
 
 ## Limitations
 
-- The sample includes selected counties rather than all Texas counties.
-- County-level analysis cannot identify individual driver behavior.
-- Population-based crash rates are useful, but vehicle miles traveled would be an even stronger exposure measure.
-- Small counties may produce unstable percentages because of low counts.
+- Small sample size (\(n = 9\) counties)
+- Limited variables
+- Regression results are not statistically significant
 
-## Conclusion
+### Implication
 
-This project uses rates, confidence intervals, and regression to study whether Harris County stands out as having the worst drivers among the selected counties.
+The results suggest trends, but not definitive causation.
 
-The final answer depends on whether Harris ranks highest after adjusting for population and whether its estimated crash rate is clearly different from comparable counties.
+## Final Conclusion
+
+- Harris County has the highest crash rate
+- But:
+  - only slightly higher than Bexar
+  - not strongly explained by driver behavior
+
+### Final Answer
+
+Harris does not clearly have the “worst drivers.”
 
 
 
