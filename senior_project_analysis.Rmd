@@ -8,6 +8,8 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
+library(ggrepel)
+library(scales)
 ```
 
 # Introduction
@@ -146,14 +148,20 @@ This scatterplot checks whether counties with a higher share of speed-related cr
 
 ```{r}
 ggplot(crash, aes(x = SpeedPercent, y = Crash_Rate, label = County)) +
-  geom_point(size = 3) +
+  geom_point(size = 4) +
   geom_smooth(method = "lm", se = FALSE) +
-  geom_text(nudge_y = 40, size = 3) +
+  geom_text_repel(
+    size = 4,
+    box.padding = 0.5,
+    point.padding = 0.3
+  ) +
+  scale_x_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "Speeding vs Crash Rate",
-    x = "Proportion of Crashes Involving Speed",
+    x = "Percent of Crashes Involving Speed",
     y = "Crash Rate per 100,000"
-  )
+  ) +
+  theme_minimal(base_size = 14)
 ```
 ## Interpretation
 
@@ -163,28 +171,38 @@ The scatterplot suggests whether there is a relationship between speeding and cr
 
 
 ```{r}
+
+
 ggplot(crash, aes(x = DistractedPercent, y = Crash_Rate, label = County)) +
-  geom_point(size = 3) +
-  geom_smooth(method = "lm", se = FALSE) +
-  geom_text(nudge_y = 40, size = 3) +
+  geom_point(size = 4) +
+  geom_smooth(method = "lm", se = FALSE, aes(group = 1), linetype = "solid") +
+  geom_text_repel(
+    size = 4,
+    box.padding = 0.5,
+    point.padding = 0.3
+  ) +
+  scale_x_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "Distracted Driving vs Crash Rate",
-    x = "Proportion of Crashes Involving Distracted Driving",
+    x = "Percent of Crashes Involving Distracted Driving",
     y = "Crash Rate per 100,000"
-  )
+  ) +
+  theme_minimal(base_size = 14)
 ```
 # Drinking and Driving
 
 ```{r}
 ggplot(crash, aes(x = DUIPercent, y = Crash_Rate, label = County)) +
   geom_point(size = 3) +
-  geom_smooth(method = "lm", se = FALSE) +
-  geom_text(nudge_y = 40, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, aes(group = 1)) +
+  geom_text_repel(size = 3.5) +
+  scale_x_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "DUI Driving vs Crash Rate",
-    x = "Proportion of Crashes Involving a DUI",
+    x = "Percent of Crashes Involving DUI",
     y = "Crash Rate per 100,000"
-  )
+  ) +
+  theme_minimal(base_size = 14)
 ```
 # Table for the Percentages
 ```{r}
