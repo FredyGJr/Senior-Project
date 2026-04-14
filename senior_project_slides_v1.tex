@@ -230,14 +230,13 @@ and counties that have more severe crashes.
 \begin{frame}{Summary of Derived Variables}
 \phantomsection\label{summary-of-derived-variables}
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1209}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1209}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1209}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1209}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1978}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1758}}@{}}
-\caption{Derived variables used in the analysis}\tabularnewline
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1467}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1467}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1467}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1733}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1467}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2400}}@{}}
+\caption{Derived Variables}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 County
@@ -251,8 +250,6 @@ SpeedPercent
 DUIPercent
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 DistractedPercent
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-SeverityPercent
 \end{minipage} \\
 \midrule\noalign{}
 \endfirsthead
@@ -269,20 +266,18 @@ SpeedPercent
 DUIPercent
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 DistractedPercent
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-SeverityPercent
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
-Harris & 2301.6684 & 10.9115 & 0.3240 & 0.0291 & 0.0855 & 0.2503 \\
-Bexar & 2238.5467 & 9.4576 & 0.1549 & 0.0341 & 0.3660 & 0.0202 \\
-Hidalgo & 1788.1609 & 6.1397 & 0.3359 & 0.0453 & 0.0947 & 0.0211 \\
-Montgomery & 1592.3210 & 7.6058 & 0.3705 & 0.0393 & 0.1459 & 0.0291 \\
-Medina & 1475.8063 & 19.4185 & 0.2344 & 0.0550 & 0.2285 & 0.0514 \\
-Hale & 1437.0165 & 12.5778 & 0.2735 & 0.0547 & 0.2363 & 0.0416 \\
-Hays & 1221.6796 & 8.8183 & 0.3115 & 0.0666 & 0.2526 & 0.0455 \\
-Travis & 1137.0393 & 9.9577 & 0.1920 & 0.0745 & 0.3235 & 0.0410 \\
-Lipscomb & 910.7468 & 36.4299 & 0.2000 & 0.0000 & 0.0800 & 0.0400 \\
+Harris & 2301.668 & 10.912 & 0.324 & 0.029 & 0.086 \\
+Travis & 1137.039 & 9.958 & 0.192 & 0.074 & 0.323 \\
+Bexar & 2238.547 & 9.458 & 0.155 & 0.034 & 0.366 \\
+Montgomery & 1592.321 & 7.606 & 0.370 & 0.039 & 0.146 \\
+Hays & 1221.680 & 8.818 & 0.311 & 0.067 & 0.253 \\
+Medina & 1475.806 & 19.419 & 0.234 & 0.055 & 0.228 \\
+Hidalgo & 1788.161 & 6.140 & 0.336 & 0.045 & 0.095 \\
+Hale & 1437.017 & 12.578 & 0.274 & 0.055 & 0.236 \\
+Lipscomb & 910.747 & 36.430 & 0.200 & 0.000 & 0.080 \\
 \bottomrule\noalign{}
 \end{longtable}
 \end{frame}
@@ -320,7 +315,7 @@ because it adjusts for county size.
 
 \begin{frame}{Crash Rate by County}
 \phantomsection\label{crash-rate-by-county}
-\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/crash-rate-plot-1} \end{center}
+\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/unnamed-chunk-1-1} \end{center}
 
 \begin{block}{Brief interpretation}
 \phantomsection\label{brief-interpretation-1}
@@ -420,7 +415,7 @@ differences.
 
 \begin{frame}{Speeding vs Crash Rate}
 \phantomsection\label{speeding-vs-crash-rate}
-\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/speed-vs-crash-1} \end{center}
+\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/unnamed-chunk-2-1} \end{center}
 
 \begin{block}{Brief interpretation}
 \phantomsection\label{brief-interpretation-4}
@@ -431,7 +426,7 @@ crashes also tend to have higher crash rates.
 
 \begin{frame}{Distracted Driving vs Crash Rate}
 \phantomsection\label{distracted-driving-vs-crash-rate}
-\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/distracted-vs-crash-1} \end{center}
+\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/unnamed-chunk-3-1} \end{center}
 
 \begin{block}{Brief interpretation}
 \phantomsection\label{brief-interpretation-5}

@@ -180,11 +180,9 @@ This measure helps distinguish between counties that have many crashes and count
 ```{r derived-table}
 knitr::kable(
   crash %>%
-    select(County, Crash_Rate, Fatal_Rate, SpeedPercent, DUIPercent, DistractedPercent, SeverityPercent) %>%
-    mutate(across(where(is.numeric), ~ round(.x, 4))) %>%
-    arrange(desc(Crash_Rate)),
-  booktabs = TRUE,
-  caption = "Derived variables used in the analysis"
+    select(County, Crash_Rate, Fatal_Rate, SpeedPercent, DUIPercent, DistractedPercent),
+  digits = 3,
+  caption = "Derived Variables"
 )
 ```
 
@@ -204,7 +202,7 @@ Ranking by crash rate is more meaningful than ranking by total crashes because i
 
 ## Crash Rate by County
 
-```{r crash-rate-plot}
+```{r, fig.width=5, fig.height=3}
 ggplot(crash, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
   geom_col() +
   coord_flip() +
@@ -214,6 +212,7 @@ ggplot(crash, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
     y = "Crash Rate"
   ) +
   theme_minimal(base_size = 16)
+
 ```
 
 ### Brief interpretation
@@ -250,7 +249,7 @@ These percentages help explain why crash rates differ across counties. High valu
 
 ## Speeding vs Crash Rate
 
-```{r speed-vs-crash}
+```{r, fig.width=5, fig.height=3}
 ggplot(crash, aes(x = SpeedPercent, y = Crash_Rate, label = County)) +
   geom_point(size = 3) +
   geom_smooth(method = "lm", se = FALSE) +
@@ -269,7 +268,7 @@ An upward trend would suggest that counties with more speed-related crashes also
 
 ## Distracted Driving vs Crash Rate
 
-```{r distracted-vs-crash}
+```{r, fig.width=5, fig.height=3}
 ggplot(crash, aes(x = DistractedPercent, y = Crash_Rate, label = County)) +
   geom_point(size = 3) +
   geom_smooth(method = "lm", se = FALSE) +
