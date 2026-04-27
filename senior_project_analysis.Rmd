@@ -59,20 +59,19 @@ To compare counties fairly, several derived variables were created using the fol
 \]
 
 \[
-\text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
+X = \text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
 \]
 
 \[
-\text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
+Y = \text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
 \]
 
 \[
-\text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
+Z = \text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
 \]
 
-\[
-\text{Severity Percent} = \frac{\text{Fatal Crashes + Serious Crashes}}{\text{Total Crashes}}
-\]
+
+
 
 ```{r}
 crash <- crash %>%
@@ -147,7 +146,7 @@ The bar chart clearly shows differences in crash rates across counties. If Harri
 This scatterplot checks whether counties with a higher share of speed-related crashes also tend to have higher crash rates.
 
 ```{r}
-ggplot(crash, aes(x = SpeedPercent, y = Crash_Rate, label = County)) +
+ggplot(crash, aes(x = Crash_Rate, y = SpeedPercent, label = County)) +
   geom_point(size = 4) +
   geom_smooth(method = "lm", se = FALSE) +
   geom_text_repel(
@@ -155,11 +154,11 @@ ggplot(crash, aes(x = SpeedPercent, y = Crash_Rate, label = County)) +
     box.padding = 0.5,
     point.padding = 0.3
   ) +
-  scale_x_continuous(labels = percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "Speeding vs Crash Rate",
-    x = "Percent of Crashes Involving Speed",
-    y = "Crash Rate per 100,000"
+    x = "Crash Rate per 100,000",
+    y = "Percent of Crashes Involving Speed"
   ) +
   theme_minimal(base_size = 14)
 
@@ -182,6 +181,7 @@ ggplot(crash, aes(x = SpeedPercent, y = Crash_Rate, label = County)) +
     y = "Crash Rate per 100,000"
   ) +
   theme_minimal(base_size = 14)
+# will not use since it does not look right starting at 0
 ```
 ## Interpretation
 
@@ -193,7 +193,7 @@ The scatterplot suggests whether there is a relationship between speeding and cr
 ```{r}
 
 
-ggplot(crash, aes(x = DistractedPercent, y = Crash_Rate, label = County)) +
+ggplot(crash, aes(x = Crash_Rate, y = DistractedPercent, label = County)) +
   geom_point(size = 4) +
   geom_smooth(method = "lm", se = FALSE, aes(group = 1), linetype = "solid") +
   geom_text_repel(
@@ -201,29 +201,45 @@ ggplot(crash, aes(x = DistractedPercent, y = Crash_Rate, label = County)) +
     box.padding = 0.5,
     point.padding = 0.3
   ) +
-  scale_x_continuous(labels = percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "Distracted Driving vs Crash Rate",
-    x = "Percent of Crashes Involving Distracted Driving",
-    y = "Crash Rate per 100,000"
+    x = "Crash Rate per 100,000",
+    y = "Percent of Crashes Involving Distracted Driving"
   ) +
   theme_minimal(base_size = 14)
 ```
 # Drinking and Driving
 
 ```{r}
-ggplot(crash, aes(x = DUIPercent, y = Crash_Rate, label = County)) +
+ggplot(crash, aes(x = Crash_Rate, y = DUIPercent, label = County)) +
   geom_point(size = 3) +
   geom_smooth(method = "lm", se = FALSE, aes(group = 1)) +
   geom_text_repel(size = 3.5) +
-  scale_x_continuous(labels = percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "DUI Driving vs Crash Rate",
-    x = "Percent of Crashes Involving DUI",
-    y = "Crash Rate per 100,000"
+    x = "Crash Rate per 100,000",
+    y = "Percent of Crashes Involving DUI"
   ) +
   theme_minimal(base_size = 14)
 ```
+```{r}
+#To get the r coefficient for the above graphs and their regression line
+  # Speed vs Crash Rate
+cor(crash$Crash_Rate, crash$SpeedPercent)
+
+# Distracted vs Crash Rate
+cor(crash$Crash_Rate, crash$DistractedPercent)
+
+# DUI vs Crash Rate
+cor(crash$Crash_Rate, crash$DUIPercent)
+# Same as above but gives r, p-value, and confidence interval
+cor.test(crash$Crash_Rate, crash$SpeedPercent)
+cor.test(crash$Crash_Rate, crash$DistractedPercent)
+cor.test(crash$Crash_Rate, crash$DUIPercent)
+```
+
 # Table for the Percentages
 ```{r}
 crash %>%

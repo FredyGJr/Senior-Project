@@ -1,0 +1,485 @@
+---
+title: "Evaluating Driving Risk Across Texas Counties: A Statistical Comparison of Crash Rates and Risk Factors"
+author: "Fredy Guevara"
+date: "`r Sys.Date()`"
+output: pdf_document
+fontsize: 12pt
+geometry: margin=1in
+bibliography: references.bib
+
+---
+
+\begin{abstract}
+This study examines whether Harris County can be considered to have the "worst drivers" among a selected group of Texas counties. The analysis focuses on crash rates, fatal crash rates, and proportions of crashes involving speeding, driving under the influence (DUI), and distracted driving. Using data from the Texas Department of Transportation, new variables were constructed to standardize comparisons across counties with different population sizes. 
+
+Exploratory analysis, confidence intervals, and multiple linear regression were applied to evaluate relationships between risky driving behaviors and crash rates. The results indicate that while Harris County has one of the highest crash rates, it is not uniquely extreme when compared to other large counties such as Bexar. Additionally, none of the examined risk factors were statistically significant predictors of crash rates in the regression model. 
+
+Overall, the findings suggest that driver risk behaviors vary across counties, but no single factor alone explains crash rates. The results highlight the importance of population size, variability, and multiple contributing factors when evaluating roadway safety.
+\end{abstract}
+
+\section{Introduction}
+
+Motor vehicle crashes remain a significant public safety concern in Texas, contributing to injuries, fatalities, and substantial economic costs each year. As one of the largest and fastest-growing states in the United States, Texas experiences a wide range of traffic conditions, from densely populated urban centers to sparsely populated rural areas. These differences in population density, roadway infrastructure, and traffic volume lead to considerable variation in crash patterns across counties.
+
+Public perception often suggests that large metropolitan areas, particularly Harris County, which includes the city of Houston, have some of the worst drivers in the state. This belief is typically based on the high number of reported crashes, heavy congestion, and the extensive highway network that characterizes the region. However, such conclusions are frequently drawn from raw crash counts, which can be misleading when comparing counties with vastly different population sizes.
+
+From a statistical standpoint, total crash counts alone do not provide a meaningful basis for comparison. Larger counties naturally experience more crashes simply because they contain more drivers, vehicles, and roadway interactions. As a result, using raw totals to determine which county has the "worst drivers" does not account for underlying differences in population and exposure.
+
+To address this limitation, this study evaluates crash data using population-adjusted measures and statistical analysis. In particular, crash counts are converted into rates per 100,000 individuals, allowing for standardized comparisons across counties. In addition to overall crash frequency, this study also considers fatal crash rates and the proportion of crashes involving specific risk factors such as speeding, driving under the influence (DUI), and distracted driving.
+
+Within the context of this study, the term "worst drivers" is not treated as a subjective label, but rather as a measurable concept defined by three key components:
+\begin{itemize}
+    \item Crash frequency relative to population,
+    \item Fatal crash risk,
+    \item The prevalence of risky driving behaviors.
+\end{itemize}
+
+The primary objective of this analysis is to determine whether Harris County exhibits significantly higher crash risk compared to other selected Texas counties when evaluated using these measures. To accomplish this, crash data from the Texas Department of Transportation (TxDOT) [@txdot2024stats] are analyzed alongside population estimates from the Texas Demographic Center.
+
+The methodology combines descriptive statistics, confidence interval estimation, and multiple linear regression modeling to evaluate both differences in crash rates and the extent to which behavioral risk factors explain those differences. By applying these statistical tools, the study aims to distinguish between meaningful patterns and variations that may arise due to randomness or differences in population size.
+
+Ultimately, this paper seeks to provide a data-driven answer to the question of whether Harris County can reasonably be considered to have the worst drivers, while also highlighting the broader complexity involved in evaluating roadway safety across different regions.
+
+\section{Data and Variables}
+
+The data used in this study were obtained from the Texas Department of Transportation (TxDOT), which publishes detailed annual crash statistics for counties across Texas [@txdot2024stats,@txdot2024county,@txdot2024fatal,@txdot2024speed,@txdot2024dui,@txdot2024distracted]. These reports include information on total crashes, fatal crashes, and contributing factors such as speeding, driving under the influence (DUI), and distracted driving. 
+
+In order to ensure consistency with the crash data, population estimates for each county were obtained from the Texas Demographic Center \cite{texasdemographics}. These population values are essential for constructing standardized measures that allow for meaningful comparisons across counties of different sizes.
+
+The analysis focuses on a selected group of nine counties:
+\[
+\text{Harris, Travis, Bexar, Montgomery, Hays, Medina, Hidalgo, Hale, and Lipscomb}
+\]
+
+These counties were chosen to represent a range of geographic and demographic characteristics. Harris, Bexar, and Travis are large urban counties that contain major metropolitan areas, while counties such as Montgomery and Hays represent suburban regions. The remaining counties, including Medina, Hidalgo, Hale, and Lipscomb, provide additional variation in population size and regional characteristics. This mixture allows the analysis to capture differences between urban, suburban, and rural driving environments.
+
+\subsection{Standardization of Crash Measures}
+
+A key challenge in comparing crash data across counties is the large variation in population size. Counties with larger populations naturally experience more crashes due to increased traffic volume. Therefore, raw crash counts alone cannot be used to determine relative crash risk.
+
+To address this issue, crash counts were converted into rates per 100,000 individuals. The primary measure used in this analysis is the crash rate, defined as:
+
+\[
+\text{Crash Rate} = \frac{\text{Total Crashes}}{\text{Population}} \times 100{,}000
+\]
+
+This transformation standardizes crash frequency by population size, allowing for direct comparison across counties. By expressing crash counts relative to population, the analysis focuses on the likelihood of crashes rather than the total number of incidents.
+
+Similarly, fatal crash rates were calculated to assess the severity of crashes:
+
+\[
+\text{Fatal Crash Rate} = \frac{\text{Fatal Crashes}}{\text{Population}} \times 100{,}000
+\]
+
+This measure provides insight into the risk of fatal outcomes and complements the overall crash rate by focusing specifically on more severe incidents.
+
+\subsection{Risk Behavior Variables}
+
+In addition to overall crash frequency, this study examines the role of specific driving behaviors that are commonly associated with increased crash risk. These behaviors include speeding, DUI, and distracted driving.
+
+To allow for consistent comparison, these variables were defined as proportions of total crashes within each county:
+
+\[
+X = \text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
+\]
+
+\[
+Y = \text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
+\]
+
+\[
+Z = \text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
+\]
+
+Expressing these variables as proportions rather than raw counts ensures that they are independent of population size. This allows the analysis to focus on the relative importance of each behavior within a county’s crash profile.
+
+For example, a county with a high number of speed-related crashes may not necessarily have a high proportion of speed-related crashes if its total crash count is also large. By using percentages, the analysis captures how frequently each behavior contributes to crashes rather than how often it occurs in absolute terms.
+
+\subsection{Interpretation of Variables}
+
+Each of the variables defined above serves a specific purpose in the analysis. The crash rate provides a measure of overall crash risk, while the fatal crash rate provides a measure of severity. The behavioral variables capture potential contributing factors that may influence crash outcomes.
+
+Together, these variables allow for a more comprehensive evaluation of driving risk. Rather than relying on a single measure, the analysis incorporates multiple perspectives, including frequency, severity, and behavior. This approach reflects the complexity of crash dynamics and provides a more balanced assessment of roadway safety.
+
+\subsection{Limitations of Variable Construction}
+
+While these variables provide useful insights, it is important to acknowledge their limitations. Crash rates are based on population rather than exposure measures such as vehicle miles traveled. As a result, they may not fully capture differences in driving activity across counties.
+
+Additionally, the behavioral variables are derived from reported crash data, which may be subject to reporting differences or measurement error. For example, the identification of distracted driving or DUI involvement may vary depending on investigation practices.
+
+Despite these limitations, the variables used in this study provide a reasonable and widely accepted framework for comparing crash risk across counties. They allow for consistent analysis while remaining grounded in the available data.
+
+\section{Exploratory Analysis}
+
+To better understand the differences in crash outcomes across counties, an exploratory analysis was conducted using both numerical summaries and graphical visualizations. This stage of the analysis is essential for identifying patterns, trends, and potential relationships prior to applying formal statistical methods. By examining the data visually and descriptively, it becomes possible to evaluate whether the initial research question is supported by observable trends.
+
+\subsection{Crash Rate Comparisons}
+
+The crash rate per 100,000 individuals serves as the primary measure for comparing counties. After standardizing the data, Harris County was found to have the highest crash rate among the counties analyzed, with approximately 2,301 crashes per 100,000 people. Bexar County follows closely behind, with a crash rate of approximately 2,238 per 100,000.
+
+Although Harris County ranks first, the difference between Harris and Bexar is relatively small. This is an important observation, as it suggests that Harris County is not dramatically worse than other large urban counties. Instead, it is part of a group of counties with similarly high crash rates. This finding challenges the initial assumption that Harris County clearly stands apart.
+
+Travis County provides a useful point of comparison. Despite being a large urban county, Travis has a significantly lower crash rate of approximately 1,137 per 100,000 people. If population size alone determined crash risk, Travis would be expected to have a crash rate similar to Harris and Bexar. However, its lower rate suggests that additional factors, such as traffic flow, roadway design, or urban planning, may influence crash outcomes.
+
+Smaller counties such as Lipscomb exhibit the lowest crash rates overall. However, these values should be interpreted cautiously. Because Lipscomb has a very small population, even small changes in crash counts can result in large fluctuations in the calculated rate. This variability is a recurring theme throughout the analysis and highlights the importance of considering population size when interpreting results.
+
+\subsection{Fatal Crash Rate Patterns}
+
+Fatal crash rates provide a complementary perspective by focusing on crash severity rather than frequency. When examining fatal crash rates, a different pattern emerges compared to overall crash rates. Smaller counties, particularly Lipscomb, appear to have the highest fatal crash rates.
+
+For example, Lipscomb County has a fatal crash rate of approximately 36.43 per 100,000 people, which is significantly higher than all other counties in the sample. However, this result is driven by the fact that Lipscomb recorded only one fatal crash and has a very small population. This illustrates a key statistical limitation: when the denominator is small, rate-based measures become highly sensitive to individual events.
+
+In contrast, Harris County has a much lower fatal crash rate of approximately 10.91 per 100,000, despite having the highest total number of fatal crashes. This difference highlights the importance of distinguishing between total counts and rates. Large counties may experience more fatal crashes in absolute terms, but their rates are often lower due to the large population base.
+
+Overall, the fatal crash analysis reinforces the idea that both frequency and severity must be considered when evaluating crash risk, and that population size plays a critical role in interpreting these measures.
+
+\subsection{Risk Behavior Comparisons}
+
+The next component of the exploratory analysis involves examining the proportions of crashes associated with specific risky behaviors. These behaviors include speeding, DUI, and distracted driving, and they provide insight into potential contributing factors behind crash outcomes.
+
+Speed-related crashes show moderate variation across counties, generally ranging between 15\% and 37\%. Montgomery County has the highest proportion of speed-related crashes, while Bexar County has one of the lowest. Harris County falls near the middle of this range, with approximately 32\% of crashes involving speed. This suggests that while speeding is a relevant factor, it is not uniquely elevated in Harris County compared to others.
+
+DUI-related crashes are relatively low across all counties, typically between 2\% and 7\%. Travis County has the highest DUI percentage, while Lipscomb reports no DUI crashes. However, the small number of DUI-related crashes and limited variation across counties make it difficult to draw strong conclusions about its impact at the county level.
+
+Distracted driving exhibits greater variability than the other risk factors. Bexar County has a relatively high proportion of distracted-driving crashes, while Harris County has a lower proportion. This finding is notable because Harris County still has the highest overall crash rate despite having a lower distracted-driving percentage. This suggests that distracted driving alone does not explain the differences in crash rates.
+
+Taken together, these comparisons indicate that while risky behaviors are present in all counties, their relative contributions vary and do not clearly identify a single dominant factor.
+
+\subsection{Scatterplot Analysis}
+
+To further examine relationships between crash rates and risk factors, scatterplots were constructed with crash rate as the response variable and each behavioral variable as a predictor. A linear trend line was added to each plot to illustrate potential relationships.
+
+The scatterplot for speeding shows a slight positive trend, indicating that counties with higher proportions of speed-related crashes tend to have higher crash rates. However, the data points are widely dispersed, and the slope of the trend line is relatively small. This suggests that while there may be a relationship, it is not strong or consistent across all counties.
+
+The scatterplot for DUI shows a slight negative trend, which is counterintuitive. One would generally expect higher DUI involvement to correspond to higher crash rates. However, this pattern is likely influenced by the small sample size and the relatively low variation in DUI percentages. It may also reflect differences in reporting practices or enforcement rather than a true causal relationship.
+
+The scatterplot for distracted driving appears nearly flat, indicating little to no relationship between distracted-driving percentages and crash rates. Counties with both high and low distracted-driving percentages exhibit a wide range of crash rates, further suggesting that this variable does not strongly explain crash differences in this dataset.
+
+\subsection{Summary of Exploratory Findings}
+
+The exploratory analysis provides several important insights. First, Harris County has the highest crash rate, but the difference between Harris and Bexar is small, indicating that Harris is not uniquely extreme. Second, fatal crash rates highlight the impact of population size, particularly in smaller counties where rates are more volatile. Third, none of the examined behavioral variables show a strong or consistent relationship with crash rates.
+
+These findings suggest that while observable patterns exist, they are not sufficient to fully explain the variation in crash outcomes. This motivates the use of confidence intervals and regression analysis to further evaluate whether these differences are statistically meaningful.
+
+\section{Confidence Intervals}
+
+While descriptive statistics provide a useful summary of crash rates across counties, they do not indicate how reliable those estimates are. In particular, differences in crash rates may arise due to random variation, especially when comparing counties with very different population sizes. To address this issue, confidence intervals were constructed for each county’s crash rate.
+
+\subsection{Construction of Confidence Intervals}
+
+The crash rate can be interpreted as a proportion of crashes relative to the total population. Let
+
+\[
+\hat{p} = \frac{\text{Total Crashes}}{\text{Population}}
+\]
+
+represent the observed crash proportion for a given county. Using this value, a 95\% confidence interval for the crash proportion can be constructed as:
+
+\[
+\hat{p} \pm 1.96 \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+\]
+
+where \(n\) is the population size of the county and \(1.96\) corresponds to the critical value for a 95\% confidence level. To express the interval in the same units as the crash rate, the result is multiplied by 100,000.
+
+This interval provides a range of plausible values for the true crash rate in each county. If the sampling process were repeated multiple times, approximately 95\% of the constructed intervals would contain the true crash rate.
+
+\subsection{Effect of Population Size}
+
+One of the most important factors influencing the width of a confidence interval is the population size. Counties with large populations tend to have narrower confidence intervals, indicating that their crash rate estimates are more precise and stable. In this study, Harris and Bexar counties have relatively narrow intervals due to their large populations.
+
+In contrast, counties with small populations exhibit much wider confidence intervals. Lipscomb County provides a clear example of this effect. Because its population is very small, even a small number of crashes can lead to a large estimated crash rate. As a result, the confidence interval for Lipscomb is wide, reflecting a high degree of uncertainty in the estimate.
+
+This demonstrates a key statistical principle: estimates based on small sample sizes are less reliable and should be interpreted with caution.
+
+\subsection{Comparing Counties Using Confidence Intervals}
+
+Confidence intervals are particularly useful for comparing whether differences between counties are statistically meaningful. A common rule of thumb is that if two confidence intervals do not overlap, there is stronger evidence that the underlying crash rates are different.
+
+In this analysis, the comparison between Harris and Montgomery counties is especially important. The confidence intervals for these two counties do not overlap, suggesting that Harris County has a statistically higher crash rate than Montgomery County. This result is notable because the counties are geographically adjacent, yet they exhibit different crash patterns.
+
+This difference may be explained by variations in traffic density, roadway design, and urban structure. Harris County includes the city of Houston, which has a large population, extensive highway systems, and high traffic volume. Montgomery County, while still populated, has more suburban characteristics, which may result in fewer opportunities for crashes relative to population.
+
+Other county comparisons show partial or complete overlap in their confidence intervals. For example, Harris and Bexar counties have overlapping intervals, indicating that their crash rates are not clearly distinguishable at the 95\% confidence level. This reinforces the earlier observation that Harris County is not dramatically different from other large urban counties.
+
+\subsection{Implications for Interpretation}
+
+The use of confidence intervals highlights that not all observed differences in crash rates should be interpreted as meaningful. Some differences may be the result of random variation rather than true underlying differences in driving behavior or conditions.
+
+In particular, counties with small populations require careful interpretation. Lipscomb County’s high fatal crash rate, for example, is largely driven by a single fatal crash combined with a small population. The wide confidence interval reflects this uncertainty and indicates that the estimate is not stable.
+
+Overall, confidence interval analysis provides an important complement to descriptive statistics. It allows for a more cautious and statistically grounded interpretation of the data, ensuring that conclusions are based on evidence rather than appearance alone.
+
+\subsection{Connection to Research Question}
+
+In the context of the research question, confidence intervals help determine whether Harris County truly stands out from other counties. While Harris has the highest observed crash rate, the overlap with Bexar County suggests that it is not uniquely worse. However, the lack of overlap with Montgomery indicates that Harris does have a meaningfully higher crash rate than some neighboring counties.
+
+This nuanced result supports the idea that Harris County has a high crash rate but does not definitively have the worst drivers when compared across all counties in the sample.
+
+\section{Regression Model and Results}
+
+To further evaluate whether behavioral risk factors help explain differences in crash rates across counties, a multiple linear regression model was constructed. While the exploratory analysis provided visual and descriptive insights, regression analysis allows for a more formal examination of the relationships between variables.
+
+\subsection{Model Specification}
+
+The model used in this study is defined as:
+
+\[
+\text{Crash Rate} = \beta_0 + \beta_1X + \beta_2Y + \beta_3Z + \varepsilon
+\]
+
+where:
+
+\[
+X = \text{Speed Percent}, \quad 
+Y = \text{DUI Percent}, \quad 
+Z = \text{Distracted Percent}
+\]
+
+In this equation, \(\beta_0\) represents the intercept, which is the estimated crash rate when all predictor variables are equal to zero. The coefficients \(\beta_1\), \(\beta_2\), and \(\beta_3\) represent the expected change in crash rate associated with a one-unit increase in each predictor variable, holding the other variables constant. The error term \(\varepsilon\) captures variation in crash rates that is not explained by the model.
+
+The model was estimated using ordinary least squares (OLS) regression, which minimizes the sum of squared differences between observed and predicted crash rates.
+
+\subsection{Interpretation of the Intercept}
+
+The intercept \(\beta_0\) represents the baseline crash rate when all predictor variables are equal to zero. In practice, this scenario is not realistic because it would imply that no crashes involve speeding, DUI, or distracted driving. As a result, the intercept is not interpreted as a meaningful real-world value. Instead, it serves as a mathematical starting point for the regression equation.
+
+It is also possible for the intercept to be negative. While a negative crash rate is not meaningful in practice, this does not invalidate the model. The intercept is determined by the best-fit line through the data and is influenced by the values and distribution of the predictor variables.
+
+\subsection{Coefficient Interpretation}
+
+Each coefficient in the model provides information about the relationship between a specific behavioral variable and crash rate.
+
+The coefficient for Speed Percent (\(\beta_1\)) is positive. This suggests that counties with higher proportions of speed-related crashes tend to have higher crash rates. This result aligns with expectations, as speeding is commonly associated with increased crash risk. However, the magnitude of the coefficient is relatively small, indicating that the effect is limited.
+
+The coefficient for DUI Percent (\(\beta_2\)) is negative. At first glance, this may appear counterintuitive, as DUI is generally associated with unsafe driving behavior. However, this result does not imply that DUI reduces crash rates. Instead, it likely reflects the structure of the dataset. DUI-related crashes represent a relatively small proportion of total crashes, and the limited variation across counties may lead to unstable coefficient estimates.
+
+The coefficient for Distracted Percent (\(\beta_3\)) is positive but small. This suggests a weak positive relationship between distracted driving and crash rates. However, the effect is not strong enough to provide clear evidence of a meaningful relationship.
+
+\subsection{Statistical Significance}
+
+To determine whether the observed relationships are statistically meaningful, hypothesis tests were conducted for each coefficient. The hypotheses for each predictor variable are:
+
+\[
+H_0: \beta_i = 0 \quad \text{(no relationship)}
+\]
+\[
+H_a: \beta_i \neq 0 \quad \text{(some relationship)}
+\]
+
+The p-values associated with each coefficient were all greater than 0.05. This means that, at the 5\% significance level, there is insufficient evidence to reject the null hypothesis for any of the predictor variables.
+
+In practical terms, this result indicates that the model does not provide strong statistical evidence that speeding, DUI, or distracted driving percentages explain differences in crash rates across the counties analyzed.
+
+It is important to note that failing to reject the null hypothesis does not prove that the variables have no effect. Instead, it means that the available data do not provide strong enough evidence to detect a statistically significant relationship.
+
+\subsection{Model Fit and \(R^2\)}
+
+The model produced an \(R^2\) value of approximately 0.25. The coefficient of determination, \(R^2\), is defined as:
+
+\[
+R^2 = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}
+\]
+
+This value represents the proportion of variation in crash rates that is explained by the model. An \(R^2\) of 0.25 indicates that the model explains approximately 25\% of the variation in crash rates across counties.
+
+This relatively low value suggests that the model has limited explanatory power. Most of the variation in crash rates (approximately 75\%) is due to factors not included in the model. These factors may include traffic density, road design, weather conditions, enforcement practices, and other environmental or structural variables.
+
+\subsection{Limitations of the Regression Model}
+
+Several factors may contribute to the lack of statistically significant results. First, the sample size is small, consisting of only nine counties. Small sample sizes reduce statistical power and make it more difficult to detect significant relationships.
+
+Second, the predictor variables are expressed as proportions of crashes rather than direct measures of behavior. This means they capture how crashes are distributed across categories, rather than the overall level of risky behavior in each county.
+
+Third, the model does not include other important variables that may influence crash rates. For example, differences in population density, roadway infrastructure, traffic volume, and law enforcement could all play a significant role.
+
+\subsection{Overall Interpretation}
+
+Taken together, the regression results suggest that while behavioral factors such as speeding, DUI, and distracted driving are important, they do not fully explain the variation in crash rates across counties. The lack of statistical significance indicates that these variables alone are not sufficient to determine which county has the highest crash risk.
+
+This finding supports the broader conclusion of the study: crash outcomes are influenced by a complex combination of factors, and no single variable provides a complete explanation.
+
+\section{Discussion}
+
+The primary goal of this study was to determine whether Harris County can be considered to have the worst drivers among a selected group of Texas counties. Rather than relying on raw crash counts or anecdotal perceptions, this analysis used population-adjusted crash rates, confidence intervals, and regression modeling to evaluate crash outcomes in a more rigorous and statistically meaningful way.
+
+The descriptive analysis showed that Harris County has the highest crash rate in the sample. At first glance, this finding appears to support the common perception that Harris County has particularly poor driving conditions. However, a closer examination reveals that the difference between Harris County and Bexar County is relatively small. This suggests that Harris County is not uniquely extreme but instead falls within a group of large counties with similarly high crash rates.
+
+The comparison with Travis County provides additional insight. Despite being a large urban county, Travis has a significantly lower crash rate. This indicates that population size alone does not determine crash risk and that other factors, such as infrastructure, traffic patterns, and urban design, likely play an important role. This finding challenges the assumption that all large metropolitan areas should exhibit similarly high crash rates.
+
+Confidence interval analysis further refines this interpretation. While Harris County has the highest observed crash rate, its confidence interval overlaps with that of Bexar County, suggesting that the difference between the two may not be statistically significant. In contrast, the confidence intervals for Harris and Montgomery counties do not overlap, indicating a meaningful difference between those counties. This is particularly noteworthy because Harris and Montgomery are geographically adjacent, yet they exhibit different crash patterns. This suggests that local conditions, rather than geographic proximity alone, influence crash outcomes.
+
+The regression analysis provides additional context by examining whether behavioral variables explain crash rate differences. The results indicate that speeding, DUI, and distracted driving are not statistically significant predictors of crash rate in this dataset. While some variables show expected directional relationships, such as a positive coefficient for speeding, the lack of statistical significance suggests that these factors do not independently explain the variation in crash rates across counties.
+
+This result does not imply that these behaviors are unimportant. Rather, it indicates that crash outcomes are influenced by a more complex combination of factors. For example, traffic density, roadway design, commuting patterns, and enforcement practices may all contribute to crash risk. The limited explanatory power of the regression model, as reflected by the relatively low \(R^2\) value, supports this interpretation.
+
+Another important consideration is the effect of population size on variability. Smaller counties such as Lipscomb exhibit highly unstable rates, particularly for fatal crashes. This instability arises because small populations make rate calculations sensitive to individual events. As a result, comparisons involving small counties must be interpreted with caution, and conclusions should focus more heavily on patterns observed in larger, more stable populations.
+
+Overall, the findings of this study highlight the importance of using appropriate statistical methods when evaluating crash data. Raw counts, rates, confidence intervals, and regression models each provide different perspectives, and no single measure is sufficient on its own. By combining these approaches, a more complete and nuanced understanding of crash patterns emerges.
+
+\section{Conclusion}
+
+This study examined whether Harris County, Texas, has the worst drivers among a selected group of counties using 2024 crash data from the Texas Department of Transportation. By converting crash counts into population-adjusted rates and incorporating behavioral risk factors, the analysis provided a more meaningful basis for comparison than raw totals alone.
+
+The results indicate that Harris County has the highest crash rate in the sample. However, this difference is relatively small when compared to Bexar County, and confidence interval analysis suggests that the two counties are not clearly distinguishable at the 95\% confidence level. This finding implies that while Harris County ranks highest, it is not uniquely worse than other large urban counties.
+
+The regression analysis further shows that speeding, DUI, and distracted driving are not statistically significant predictors of crash rates across the counties studied. This suggests that these behavioral factors, while important, do not fully explain the observed variation in crash outcomes. Instead, crash rates appear to be influenced by a broader set of factors, including structural and environmental conditions.
+
+The analysis also highlights the importance of population size in interpreting crash statistics. Smaller counties exhibit greater variability in both crash rates and fatal crash rates, making their estimates less stable. This reinforces the need to interpret rate-based measures carefully, particularly when comparing counties with very different population sizes.
+
+Taken together, the results of this study suggest that the concept of "worst drivers" is more complex than it initially appears. While Harris County has the highest observed crash rate in this sample, the evidence does not support the conclusion that it clearly has the worst drivers. Instead, crash outcomes are influenced by multiple interacting factors that extend beyond the behavioral variables considered in this analysis.
+
+Future research could improve upon this study by incorporating additional variables, such as vehicle miles traveled, traffic density, and roadway characteristics. Expanding the number of counties included in the analysis would also increase statistical power and provide a more comprehensive understanding of crash patterns across Texas.
+
+In conclusion, this study demonstrates that data-driven analysis can challenge common assumptions and provide a more accurate understanding of roadway safety. By applying statistical methods to real-world data, it is possible to move beyond perception and develop conclusions grounded in evidence.
+
+\section{References}
+
+Texas Department of Transportation. (2024). Motor Vehicle Crash Statistics.  
+https://www.txdot.gov/data-maps/crash-reports-records/motor-vehicle-crash-statistics.html
+
+Texas Department of Transportation. (2024). Crash Records Information.  
+
+Texas Demographic Center. Population Estimates.  
+https://demographics.texas.gov/Estimates/
+
+\section{Appendix}
+
+\begin{verbatim}
+# Appendix
+
+```{r appendix-code, echo=TRUE, eval=FALSE}
+library(tidyverse)
+library(ggrepel)
+library(scales)
+library(broom)
+
+# Load data
+crash <- read.csv("Crash_Data_2024.csv")
+
+# Clean numeric columns
+crash <- crash %>%
+  mutate(
+    Total_Crashes = as.numeric(gsub(",", "", Total_Crashes)),
+    Population = as.numeric(gsub(",", "", Population)),
+    Fatal_Crashes = as.numeric(gsub(",", "", Fatal_Crashes)),
+    Speed_Crashes = as.numeric(gsub(",", "", Speed_Crashes)),
+    DUI_Crashes = as.numeric(gsub(",", "", DUI_Crashes)),
+    Distracted_Crashes = as.numeric(gsub(",", "", Distracted_Crashes)),
+    Serious_Crashes = as.numeric(gsub(",", "", Serious_Crashes)),
+    Minor_Crashes = as.numeric(gsub(",", "", Minor_Crashes))
+  )
+
+# Create derived variables
+crash <- crash %>%
+  mutate(
+    Crash_Rate = (Total_Crashes / Population) * 100000,
+    Fatal_Rate = (Fatal_Crashes / Population) * 100000,
+    SpeedPercent = Speed_Crashes / Total_Crashes,
+    DUIPercent = DUI_Crashes / Total_Crashes,
+    DistractedPercent = Distracted_Crashes / Total_Crashes,
+    SeverityPercent = (Fatal_Crashes + Serious_Crashes) / Total_Crashes
+  )
+
+# Ranked crash-rate table
+rank_crash <- crash %>%
+  arrange(desc(Crash_Rate)) %>%
+  select(County, Crash_Rate, Total_Crashes, Population)
+
+# Ranked fatal-rate table
+rank_fatal <- crash %>%
+  arrange(desc(Fatal_Rate)) %>%
+  select(County, Fatal_Rate, Fatal_Crashes, Population)
+
+# Risk-factor table
+risk_table <- crash %>%
+  select(County, SpeedPercent, DUIPercent, DistractedPercent) %>%
+  arrange(desc(SpeedPercent))
+
+# Confidence intervals for all counties
+ci_all <- crash %>%
+  mutate(
+    p_hat = Total_Crashes / Population,
+    n = Population,
+    z = 1.96,
+    se = sqrt((p_hat * (1 - p_hat)) / n),
+    Lower_CI = (p_hat - z * se) * 100000,
+    Upper_CI = (p_hat + z * se) * 100000,
+    Crash_Rate = p_hat * 100000
+  ) %>%
+  select(County, Crash_Rate, Lower_CI, Upper_CI)
+
+# Regression model
+model <- lm(
+  Crash_Rate ~ SpeedPercent + DUIPercent + DistractedPercent,
+  data = crash
+)
+
+model_coef <- tidy(model)
+model_fit <- glance(model)
+
+# Crash rate graph
+ggplot(crash, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Crash Rate per 100,000 by County",
+    x = "County",
+    y = "Crash Rate per 100,000"
+  ) +
+  theme_minimal()
+
+# Confidence interval graph
+ggplot(ci_all, aes(x = reorder(County, Crash_Rate), y = Crash_Rate)) +
+  geom_point(size = 2.8) +
+  geom_errorbar(aes(ymin = Lower_CI, ymax = Upper_CI), width = 0.2) +
+  coord_flip() +
+  labs(
+    title = "Crash Rates with 95% Confidence Intervals",
+    x = "County",
+    y = "Crash Rate per 100,000"
+  ) +
+  theme_minimal()
+
+# Speeding vs crash rate
+ggplot(crash, aes(x = Crash_Rate, y = SpeedPercent, label = County)) +
+  geom_point(size = 4) +
+  geom_smooth(method = "lm", se = FALSE, aes(group = 1)) +
+  geom_text_repel(size = 4) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_x_continuous(labels = comma) +
+  labs(
+    title = "Speeding vs Crash Rate",
+    x = "Crash Rate per 100,000",
+    y = "Percent of Crashes Involving Speed"
+  ) +
+  theme_minimal()
+
+# DUI vs crash rate
+ggplot(crash, aes(x = Crash_Rate, y = DUIPercent, label = County)) +
+  geom_point(size = 4) +
+  geom_smooth(method = "lm", se = FALSE, aes(group = 1)) +
+  geom_text_repel(size = 4) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_x_continuous(labels = comma) +
+  labs(
+    title = "DUI vs Crash Rate",
+    x = "Crash Rate per 100,000",
+    y = "Percent of Crashes Involving DUI"
+  ) +
+  theme_minimal()
+
+# Distracted driving vs crash rate
+ggplot(crash, aes(x = Crash_Rate, y = DistractedPercent, label = County)) +
+  geom_point(size = 4) +
+  geom_smooth(method = "lm", se = FALSE, aes(group = 1)) +
+  geom_text_repel(size = 4) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_x_continuous(labels = comma) +
+  labs(
+    title = "Distracted Driving vs Crash Rate",
+    x = "Crash Rate per 100,000",
+    y = "Percent of Crashes Involving Distracted Driving"
+  ) +
+  theme_minimal()
+\end{verbatim}
+```

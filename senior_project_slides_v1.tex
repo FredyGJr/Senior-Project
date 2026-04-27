@@ -116,7 +116,7 @@
 \title{Are Harris County Drivers the Worst in Texas?}
 \subtitle{An Editable Beamer Presentation}
 \author{Fredy Guevara}
-\date{2026-04-16}
+\date{2026-04-23}
 
 \begin{document}
 \frame{\titlepage}
@@ -218,15 +218,15 @@ To compare counties fairly, several derived variables were created.
 \]
 
 \[
-\text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
+X = \text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
 \]
 
 \[
-\text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
+Y = \text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
 \]
 
 \[
-\text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
+Z = \text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
 \]
 \end{frame}
 
@@ -463,6 +463,11 @@ crashes also tend to have higher crash rates.
 \begin{frame}{Distracted Driving vs Crash Rate}
 \phantomsection\label{distracted-driving-vs-crash-rate}
 \begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/unnamed-chunk-3-1} \end{center}
+\end{frame}
+
+\begin{frame}{DUI vs Crash Rate}
+\phantomsection\label{dui-vs-crash-rate}
+\begin{center}\includegraphics{senior_project_slides_v1_files/figure-beamer/unnamed-chunk-4-1} \end{center}
 
 \begin{block}{Brief interpretation}
 \phantomsection\label{brief-interpretation-2}
@@ -572,7 +577,7 @@ toward statistical comparison.
 \begin{frame}{Regression Model}
 \phantomsection\label{regression-model}
 \[
-\text{Crash Rate}=\beta_0+\beta_1(\text{SpeedPercent})+\beta_2(\text{DUIPercent})+\beta_3(\text{DistractedPercent})+\varepsilon
+\text{Crash Rate} = \beta_0 + \beta_1 X + \beta_2 Y + \beta_3 Z + \varepsilon
 \]
 
 \begin{itemize}

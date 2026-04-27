@@ -44,6 +44,8 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(ggrepel)
 
+library(scales)
+
 # ---- Data import ----
 crash <- read.csv("Crash_Data_2024.csv")
 
@@ -195,15 +197,15 @@ To compare counties fairly, several derived variables were created.
 \]
 
 \[
-\text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
+X = \text{Speed Percent} = \frac{\text{Speed Crashes}}{\text{Total Crashes}}
 \]
 
 \[
-\text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
+Y = \text{DUI Percent} = \frac{\text{DUI Crashes}}{\text{Total Crashes}}
 \]
 
 \[
-\text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
+Z = \text{Distracted Percent} = \frac{\text{Distracted Crashes}}{\text{Total Crashes}}
 \]
 
 
@@ -296,16 +298,21 @@ Risk behaviors vary, but no single factor dominates.
 ## Speeding vs Crash Rate
 
 ```{r, fig.width=5, fig.height=3}
-ggplot(crash, aes(x = SpeedPercent, y = Crash_Rate, label = County)) +
-  geom_point(size = 3) +
+ggplot(crash, aes(x = Crash_Rate, y = SpeedPercent, label = County)) +
+  geom_point(size = 4) +
   geom_smooth(method = "lm", se = FALSE) +
-  geom_text(nudge_y = 35, size = 3) +
+  geom_text_repel(
+    size = 4,
+    box.padding = 0.5,
+    point.padding = 0.3
+  ) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "Speeding vs Crash Rate",
-    x = "Proportion of Crashes Involving Speed",
-    y = "Crash Rate per 100,000"
+    x = "Crash Rate per 100,000",
+    y = "Percent of Crashes Involving Speed"
   ) +
-  theme_minimal(base_size = 16)
+  theme_minimal(base_size = 14)
 ```
 
 ### Brief interpretation
@@ -315,17 +322,39 @@ An upward trend would suggest that counties with more speed-related crashes also
 ## Distracted Driving vs Crash Rate
 
 ```{r, fig.width=5, fig.height=3}
-ggplot(crash, aes(x = DistractedPercent, y = Crash_Rate, label = County)) +
-  geom_point(size = 3) +
-  geom_smooth(method = "lm", se = FALSE) +
-  geom_text(nudge_y = 35, size = 3) +
+ggplot(crash, aes(x = Crash_Rate, y = DistractedPercent, label = County)) +
+  geom_point(size = 4) +
+  geom_smooth(method = "lm", se = FALSE, aes(group = 1), linetype = "solid") +
+  geom_text_repel(
+    size = 4,
+    box.padding = 0.5,
+    point.padding = 0.3
+  ) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "Distracted Driving vs Crash Rate",
-    x = "Proportion of Crashes Involving Distracted Driving",
-    y = "Crash Rate per 100,000"
+    x = "Crash Rate per 100,000",
+    y = "Percent of Crashes Involving Distracted Driving"
   ) +
-  theme_minimal(base_size = 16)
+  theme_minimal(base_size = 14)
 ```
+
+## DUI vs Crash Rate
+
+```{r}
+ggplot(crash, aes(x = Crash_Rate, y = DUIPercent, label = County)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, aes(group = 1)) +
+  geom_text_repel(size = 3.5) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title = "DUI Driving vs Crash Rate",
+    x = "Crash Rate per 100,000",
+    y = "Percent of Crashes Involving DUI"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
 
 ### Brief interpretation
 
@@ -398,7 +427,7 @@ Confidence intervals help move the project beyond simple ranking and toward stat
 ## Regression Model
 
 \[
-\text{Crash Rate}=\beta_0+\beta_1(\text{SpeedPercent})+\beta_2(\text{DUIPercent})+\beta_3(\text{DistractedPercent})+\varepsilon
+\text{Crash Rate} = \beta_0 + \beta_1 X + \beta_2 Y + \beta_3 Z + \varepsilon
 \]
 
 - Goal: identify which behaviors increase crash rates
